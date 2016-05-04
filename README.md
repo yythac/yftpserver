@@ -11,7 +11,3 @@ yftpserverandroid/YFtpServerWapper.sln----------------Microsoft Visual C++ 2015 
 
 jni/yftp----------------------------------------------yftpserver core c++ source files
 src/com/yythac/yftpserver-----------------------------yftpserver java source files for android
-
-
-
-
