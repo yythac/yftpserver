@@ -1,0 +1,414 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source files">
+      <UniqueIdentifier>{378b1827-8c2e-4817-9470-e7c66beffdda}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header files">
+      <UniqueIdentifier>{e1dbb611-e8bb-4c77-91f3-0878e623902d}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource files">
+      <UniqueIdentifier>{95cbf55d-6852-47e0-b4ea-eabf55a64dd8}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="Source files\yftp">
+      <UniqueIdentifier>{a5441926-f538-4d2b-98d1-353bd50f5896}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source files\yftp\.vs">
+      <UniqueIdentifier>{71925ca8-4dc2-4d63-9802-e78daa523337}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source files\yftp\.vs\yftp">
+      <UniqueIdentifier>{53ac92e7-a914-4bec-ad92-4230711a94cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source files\yftp\.vs\yftp\v14">
+      <UniqueIdentifier>{ed6cdcee-f731-420c-9198-0fe4454c0a4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source files\yftp\Debug">
+      <UniqueIdentifier>{462f32cc-4ea3-42c6-a259-0dade03b0c99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source files\yftp\Debug\yftp.tlog">
+      <UniqueIdentifier>{4f54a93f-4471-4906-ad62-182b953e4c98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source files\yftp\ipch">
+      <UniqueIdentifier>{be7becf8-2503-4c49-a823-ae9d04621922}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source files\yftp\ipch\FILEZILLA SERVER-c4ecd4ee">
+      <UniqueIdentifier>{03524368-d248-4818-9187-c8c80e6e700a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source files\yftp\Release">
+      <UniqueIdentifier>{1152d692-89a4-4d7e-b651-9f9f55c14b33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source files\yftp\Release\yftp.tlog">
+      <UniqueIdentifier>{275301d1-a275-40e3-b482-fd5cbec9aed4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header files\yftp">
+      <UniqueIdentifier>{f4a928d9-0522-4c55-9959-dafd2c0f5190}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header files\yftp\.vs">
+      <UniqueIdentifier>{dcc6762d-e358-46a8-a84d-c30e00ff7ddb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header files\yftp\.vs\yftp">
+      <UniqueIdentifier>{55c047e9-8183-4047-98f0-00b15961bf9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header files\yftp\.vs\yftp\v14">
+      <UniqueIdentifier>{3387c631-0e6d-42e0-897f-fa6af69301f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header files\yftp\Debug">
+      <UniqueIdentifier>{5b67dff2-3f2a-4218-adb9-d1ccb9df31d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header files\yftp\Debug\yftp.tlog">
+      <UniqueIdentifier>{947589dc-77b0-439b-96a4-7055bb0c2c2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header files\yftp\ipch">
+      <UniqueIdentifier>{11dee744-5f26-406f-9aef-a31a85ac2536}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header files\yftp\ipch\FILEZILLA SERVER-c4ecd4ee">
+      <UniqueIdentifier>{ccb7f7ec-d53f-4fee-821c-296fcfe49027}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header files\yftp\Release">
+      <UniqueIdentifier>{4d3f139e-46e8-427b-be7e-11488dbdd4dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header files\yftp\Release\yftp.tlog">
+      <UniqueIdentifier>{b2863fb8-fae4-4822-9935-8274ae0a52c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Java Source Files">
+      <UniqueIdentifier>{bfaf723b-94cb-4496-8b3d-a196c53a7895}</UniqueIdentifier>
+      <Extensions>*.java</Extensions>
+    </Filter>
+    <Filter Include="Java Source Files\com">
+      <UniqueIdentifier>{e1f75de6-0562-478d-8fa7-2ddb782ec55b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Java Source Files\com\yythac">
+      <UniqueIdentifier>{127a110c-7a69-42b9-96c9-54e6f3d53341}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Java Source Files\com\yythac\yftpserver">
+      <UniqueIdentifier>{8b5394dd-8cae-411f-9699-b4b010620f50}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\..\AndroidManifest.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\jni\Android.mk" />
+    <None Include="..\..\jni\Android.mk.old">
+      <Filter>Source files</Filter>
+    </None>
+    <None Include="..\..\jni\Application.mk" />
+    <None Include="..\..\jni\Makefile">
+      <Filter>Source files</Filter>
+    </None>
+    <None Include="..\..\jni\README">
+      <Filter>Source files</Filter>
+    </None>
+    <None Include="..\..\jni\yftp\Jamfile">
+      <Filter>Source files\yftp</Filter>
+    </None>
+    <None Include="..\..\jni\yftp\Jamfile.v2">
+      <Filter>Source files\yftp</Filter>
+    </None>
+    <None Include="..\..\jni\yftp\yftp.sdf">
+      <Filter>Source files\yftp</Filter>
+    </None>
+    <None Include="..\..\jni\yftp\yftp.sln">
+      <Filter>Source files\yftp</Filter>
+    </None>
+    <None Include="..\..\jni\yftp\yftp.vcxproj">
+      <Filter>Source files\yftp</Filter>
+    </None>
+    <None Include="..\..\jni\yftp\yftp.vcxproj.filters">
+      <Filter>Source files\yftp</Filter>
+    </None>
+    <None Include="..\..\jni\yftp\yftp.vcxproj.user">
+      <Filter>Source files\yftp</Filter>
+    </None>
+    <None Include="..\..\jni\yftp\.vs\yftp\v14\.suo">
+      <Filter>Source files\yftp\.vs\yftp\v14</Filter>
+    </None>
+    <None Include="..\..\jni\yftp\Debug\vc140.idb">
+      <Filter>Source files\yftp\Debug</Filter>
+    </None>
+    <None Include="..\..\jni\yftp\Debug\vc140.pdb">
+      <Filter>Source files\yftp\Debug</Filter>
+    </None>
+    <None Include="..\..\jni\yftp\Debug\yftp.exe">
+      <Filter>Source files\yftp\Debug</Filter>
+    </None>
+    <None Include="..\..\jni\yftp\Debug\yftp.ilk">
+      <Filter>Source files\yftp\Debug</Filter>
+    </None>
+    <None Include="..\..\jni\yftp\Debug\yftp.pdb">
+      <Filter>Source files\yftp\Debug</Filter>
+    </None>
+    <None Include="..\..\jni\yftp\Debug\yftp.tlog\CL.command.1.tlog">
+      <Filter>Source files\yftp\Debug\yftp.tlog</Filter>
+    </None>
+    <None Include="..\..\jni\yftp\Debug\yftp.tlog\CL.read.1.tlog">
+      <Filter>Source files\yftp\Debug\yftp.tlog</Filter>
+    </None>
+    <None Include="..\..\jni\yftp\Debug\yftp.tlog\CL.write.1.tlog">
+      <Filter>Source files\yftp\Debug\yftp.tlog</Filter>
+    </None>
+    <None Include="..\..\jni\yftp\Debug\yftp.tlog\link.command.1.tlog">
+      <Filter>Source files\yftp\Debug\yftp.tlog</Filter>
+    </None>
+    <None Include="..\..\jni\yftp\Debug\yftp.tlog\link.read.1.tlog">
+      <Filter>Source files\yftp\Debug\yftp.tlog</Filter>
+    </None>
+    <None Include="..\..\jni\yftp\Debug\yftp.tlog\link.write.1.tlog">
+      <Filter>Source files\yftp\Debug\yftp.tlog</Filter>
+    </None>
+    <None Include="..\..\jni\yftp\Debug\yftp.tlog\yftp.lastbuildstate">
+      <Filter>Source files\yftp\Debug\yftp.tlog</Filter>
+    </None>
+    <None Include="..\..\jni\yftp\ipch\FILEZILLA SERVER-c4ecd4ee\FILEZILLA SERVER-2c30547f.ipch">
+      <Filter>Source files\yftp\ipch\FILEZILLA SERVER-c4ecd4ee</Filter>
+    </None>
+    <None Include="..\..\jni\yftp\Release\vc140.pdb">
+      <Filter>Source files\yftp\Release</Filter>
+    </None>
+    <None Include="..\..\jni\yftp\Release\yftp.exe">
+      <Filter>Source files\yftp\Release</Filter>
+    </None>
+    <None Include="..\..\jni\yftp\Release\yftp.pdb">
+      <Filter>Source files\yftp\Release</Filter>
+    </None>
+    <None Include="..\..\jni\yftp\Release\yftp.tlog\CL.command.1.tlog">
+      <Filter>Source files\yftp\Release\yftp.tlog</Filter>
+    </None>
+    <None Include="..\..\jni\yftp\Release\yftp.tlog\CL.read.1.tlog">
+      <Filter>Source files\yftp\Release\yftp.tlog</Filter>
+    </None>
+    <None Include="..\..\jni\yftp\Release\yftp.tlog\CL.write.1.tlog">
+      <Filter>Source files\yftp\Release\yftp.tlog</Filter>
+    </None>
+    <None Include="..\..\jni\yftp\Release\yftp.tlog\link.command.1.tlog">
+      <Filter>Source files\yftp\Release\yftp.tlog</Filter>
+    </None>
+    <None Include="..\..\jni\yftp\Release\yftp.tlog\link.read.1.tlog">
+      <Filter>Source files\yftp\Release\yftp.tlog</Filter>
+    </None>
+    <None Include="..\..\jni\yftp\Release\yftp.tlog\link.write.1.tlog">
+      <Filter>Source files\yftp\Release\yftp.tlog</Filter>
+    </None>
+    <None Include="..\..\jni\yftp\Release\yftp.tlog\yftp.lastbuildstate">
+      <Filter>Source files\yftp\Release\yftp.tlog</Filter>
+    </None>
+    <None Include="..\..\src\com\yythac\yftpserver\DirChooserDialog.java">
+      <Filter>Java Source Files\com\yythac\yftpserver</Filter>
+    </None>
+    <None Include="..\..\src\com\yythac\yftpserver\MainActivity.java">
+      <Filter>Java Source Files\com\yythac\yftpserver</Filter>
+    </None>
+    <None Include="..\..\src\com\yythac\yftpserver\MyAdapter.java">
+      <Filter>Java Source Files\com\yythac\yftpserver</Filter>
+    </None>
+    <None Include="..\..\src\com\yythac\yftpserver\MyFileManager.java">
+      <Filter>Java Source Files\com\yythac\yftpserver</Filter>
+    </None>
+    <None Include="..\..\src\com\yythac\yftpserver\YFtpController.java">
+      <Filter>Java Source Files\com\yythac\yftpserver</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\jni\com_yythac_yftpserver_YFtpController.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\YFtpServer.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\yftp\connection.cpp">
+      <Filter>Source files\yftp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\yftp\conversion.cpp">
+      <Filter>Source files\yftp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\yftp\ftpserve_native.cpp">
+      <Filter>Source files\yftp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\yftp\prebuild.cpp">
+      <Filter>Source files\yftp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\yftp\reply.cpp">
+      <Filter>Source files\yftp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\yftp\request_parser.cpp">
+      <Filter>Source files\yftp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\yftp\server.cpp">
+      <Filter>Source files\yftp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\yftp\client_manager.cpp">
+      <Filter>Source files\yftp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\yftp\client_node.cpp">
+      <Filter>Source files\yftp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\yftp\common.cpp">
+      <Filter>Source files\yftp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\yftp\ftp_server.cpp">
+      <Filter>Source files\yftp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\yftp\user_manager.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\yftp\user_node.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\jni\connections.txt">
+      <Filter>Source files</Filter>
+    </Text>
+    <Text Include="..\..\jni\fileutils.txt">
+      <Filter>Source files</Filter>
+    </Text>
+    <Text Include="..\..\jni\opts.txt">
+      <Filter>Source files</Filter>
+    </Text>
+    <Text Include="..\..\jni\yftp\Debug\yftp.Build.CppClean.log">
+      <Filter>Source files\yftp\Debug</Filter>
+    </Text>
+    <Text Include="..\..\jni\yftp\Debug\yftp.log">
+      <Filter>Source files\yftp\Debug</Filter>
+    </Text>
+    <Text Include="..\..\jni\yftp\Release\yftp.Build.CppClean.log">
+      <Filter>Source files\yftp\Release</Filter>
+    </Text>
+    <Text Include="..\..\jni\yftp\Release\yftp.log">
+      <Filter>Source files\yftp\Release</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="..\..\jni\yftp\Debug\cftpserver.obj">
+      <Filter>Source files\yftp\Debug</Filter>
+    </Object>
+    <Object Include="..\..\jni\yftp\Debug\connection.obj">
+      <Filter>Source files\yftp\Debug</Filter>
+    </Object>
+    <Object Include="..\..\jni\yftp\Debug\conversion.obj">
+      <Filter>Source files\yftp\Debug</Filter>
+    </Object>
+    <Object Include="..\..\jni\yftp\Debug\ftpserve_native.obj">
+      <Filter>Source files\yftp\Debug</Filter>
+    </Object>
+    <Object Include="..\..\jni\yftp\Debug\main.obj">
+      <Filter>Source files\yftp\Debug</Filter>
+    </Object>
+    <Object Include="..\..\jni\yftp\Debug\mime_types.obj">
+      <Filter>Source files\yftp\Debug</Filter>
+    </Object>
+    <Object Include="..\..\jni\yftp\Debug\prebuild.obj">
+      <Filter>Source files\yftp\Debug</Filter>
+    </Object>
+    <Object Include="..\..\jni\yftp\Debug\reply.obj">
+      <Filter>Source files\yftp\Debug</Filter>
+    </Object>
+    <Object Include="..\..\jni\yftp\Debug\request_parser.obj">
+      <Filter>Source files\yftp\Debug</Filter>
+    </Object>
+    <Object Include="..\..\jni\yftp\Debug\server.obj">
+      <Filter>Source files\yftp\Debug</Filter>
+    </Object>
+    <Object Include="..\..\jni\yftp\Release\cftpserver.obj">
+      <Filter>Source files\yftp\Release</Filter>
+    </Object>
+    <Object Include="..\..\jni\yftp\Release\connection.obj">
+      <Filter>Source files\yftp\Release</Filter>
+    </Object>
+    <Object Include="..\..\jni\yftp\Release\conversion.obj">
+      <Filter>Source files\yftp\Release</Filter>
+    </Object>
+    <Object Include="..\..\jni\yftp\Release\ftpserve_native.obj">
+      <Filter>Source files\yftp\Release</Filter>
+    </Object>
+    <Object Include="..\..\jni\yftp\Release\main.obj">
+      <Filter>Source files\yftp\Release</Filter>
+    </Object>
+    <Object Include="..\..\jni\yftp\Release\mime_types.obj">
+      <Filter>Source files\yftp\Release</Filter>
+    </Object>
+    <Object Include="..\..\jni\yftp\Release\prebuild.obj">
+      <Filter>Source files\yftp\Release</Filter>
+    </Object>
+    <Object Include="..\..\jni\yftp\Release\reply.obj">
+      <Filter>Source files\yftp\Release</Filter>
+    </Object>
+    <Object Include="..\..\jni\yftp\Release\request_parser.obj">
+      <Filter>Source files\yftp\Release</Filter>
+    </Object>
+    <Object Include="..\..\jni\yftp\Release\server.obj">
+      <Filter>Source files\yftp\Release</Filter>
+    </Object>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\jni\cmdparser.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\com_yythac_yftpserver_YFtpController.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\defines.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\fileutils.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\yftp\CFtpServer.h">
+      <Filter>Header files\yftp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\yftp\connection.hpp">
+      <Filter>Header files\yftp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\yftp\conversion.h">
+      <Filter>Header files\yftp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\yftp\ftpserver_native.h">
+      <Filter>Header files\yftp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\yftp\header.hpp">
+      <Filter>Header files\yftp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\yftp\mime_types.hpp">
+      <Filter>Header files\yftp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\yftp\reply.hpp">
+      <Filter>Header files\yftp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\yftp\request.hpp">
+      <Filter>Header files\yftp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\yftp\request_handler.hpp">
+      <Filter>Header files\yftp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\yftp\request_parser.hpp">
+      <Filter>Header files\yftp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\yftp\server.hpp">
+      <Filter>Header files\yftp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\yftp\client_manager.h">
+      <Filter>Source files\yftp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\yftp\client_node.h">
+      <Filter>Source files\yftp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\yftp\common.h">
+      <Filter>Source files\yftp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\yftp\error_code.h">
+      <Filter>Source files\yftp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\yftp\ftp_server.h">
+      <Filter>Source files\yftp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\yftp\user_manager.h">
+      <Filter>Source files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\yftp\user_node.h">
+      <Filter>Source files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

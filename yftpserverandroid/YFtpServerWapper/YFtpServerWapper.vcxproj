@@ -1,0 +1,210 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{EA55B68E-1516-4FE8-AA04-67F317C48B54}</ProjectGuid>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <NMakeBuildCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /build "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /clean "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /rebuild "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeReBuildCommandLine>
+    <NMakeIncludeSearchPath>D:\softwares\android-ndk-r10d\platforms\android-8\arch-arm\usr\include;D:\softwares\lib-for-Android-master\boost;D:\softwares\android-ndk-r10d\sources\android\support\include;D:\softwares\android-ndk-r10d\sources\cxx-stl\llvm-libc++\libcxx\include;D:\softwares\android-ndk-r10d\sources\cxx-stl\llvm-libc++abi\libcxxabi\include;D:\softwares\android-ndk-r10d\toolchains\arm-linux-androideabi-4.8\prebuilt\windows-x86_64\lib\gcc\arm-linux-androideabi\4.8\include;D:\softwares\android-ndk-r10d\toolchains\arm-linux-androideabi-4.8\prebuilt\windows-x86_64\lib\gcc\arm-linux-androideabi\4.8\include-fixed;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+    <NMakeForcedIncludes>$(ProjectDir)\gcc_Debug.h;$(VISUALGDB_DIR)\gcc_compat.h;$(NMakeForcedIncludes)</NMakeForcedIncludes>
+    <IncludePath />
+    <ReferencePath />
+    <LibraryPath />
+    <NMakeOutput>$(ProjectDir)YFtpServerWapper-Debug.vgdbsettings</NMakeOutput>
+    <NMakePreprocessorDefinitions>__VisualGDB_CFG_Debug;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <NMakeBuildCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /build "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /clean "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /rebuild "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeReBuildCommandLine>
+    <NMakeIncludeSearchPath>D:\softwares\android-ndk-r10d\platforms\android-8\arch-arm\usr\include;D:\softwares\lib-for-Android-master\boost;D:\softwares\android-ndk-r10d\sources\android\support\include;D:\softwares\android-ndk-r10d\sources\cxx-stl\llvm-libc++\libcxx\include;D:\softwares\android-ndk-r10d\sources\cxx-stl\llvm-libc++abi\libcxxabi\include;D:\softwares\android-ndk-r10d\toolchains\arm-linux-androideabi-4.8\prebuilt\windows-x86_64\lib\gcc\arm-linux-androideabi\4.8\include;D:\softwares\android-ndk-r10d\toolchains\arm-linux-androideabi-4.8\prebuilt\windows-x86_64\lib\gcc\arm-linux-androideabi\4.8\include-fixed;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+    <NMakeForcedIncludes>$(ProjectDir)\gcc_Release.h;$(VISUALGDB_DIR)\gcc_compat.h;$(NMakeForcedIncludes)</NMakeForcedIncludes>
+    <NMakePreprocessorDefinitions>__VisualGDB_CFG_Release;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <IncludePath />
+    <ReferencePath />
+    <LibraryPath />
+    <NMakeOutput>$(ProjectDir)YFtpServerWapper-Release.vgdbsettings</NMakeOutput>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Xml Include="..\..\AndroidManifest.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\jni\Android.mk" />
+    <None Include="..\..\jni\Android.mk.old" />
+    <None Include="..\..\jni\Application.mk" />
+    <None Include="..\..\jni\Makefile" />
+    <None Include="..\..\jni\README" />
+    <None Include="..\..\jni\yftp\.vs\yftp\v14\.suo" />
+    <None Include="..\..\jni\yftp\Debug\vc140.idb" />
+    <None Include="..\..\jni\yftp\Debug\vc140.pdb" />
+    <None Include="..\..\jni\yftp\Debug\yftp.exe" />
+    <None Include="..\..\jni\yftp\Debug\yftp.ilk" />
+    <None Include="..\..\jni\yftp\Debug\yftp.pdb" />
+    <None Include="..\..\jni\yftp\Debug\yftp.tlog\CL.command.1.tlog" />
+    <None Include="..\..\jni\yftp\Debug\yftp.tlog\CL.read.1.tlog" />
+    <None Include="..\..\jni\yftp\Debug\yftp.tlog\CL.write.1.tlog" />
+    <None Include="..\..\jni\yftp\Debug\yftp.tlog\link.command.1.tlog" />
+    <None Include="..\..\jni\yftp\Debug\yftp.tlog\link.read.1.tlog" />
+    <None Include="..\..\jni\yftp\Debug\yftp.tlog\link.write.1.tlog" />
+    <None Include="..\..\jni\yftp\Debug\yftp.tlog\yftp.lastbuildstate" />
+    <None Include="..\..\jni\yftp\ipch\FILEZILLA SERVER-c4ecd4ee\FILEZILLA SERVER-2c30547f.ipch" />
+    <None Include="..\..\jni\yftp\Jamfile" />
+    <None Include="..\..\jni\yftp\Jamfile.v2" />
+    <None Include="..\..\jni\yftp\Release\vc140.pdb" />
+    <None Include="..\..\jni\yftp\Release\yftp.exe" />
+    <None Include="..\..\jni\yftp\Release\yftp.pdb" />
+    <None Include="..\..\jni\yftp\Release\yftp.tlog\CL.command.1.tlog" />
+    <None Include="..\..\jni\yftp\Release\yftp.tlog\CL.read.1.tlog" />
+    <None Include="..\..\jni\yftp\Release\yftp.tlog\CL.write.1.tlog" />
+    <None Include="..\..\jni\yftp\Release\yftp.tlog\link.command.1.tlog" />
+    <None Include="..\..\jni\yftp\Release\yftp.tlog\link.read.1.tlog" />
+    <None Include="..\..\jni\yftp\Release\yftp.tlog\link.write.1.tlog" />
+    <None Include="..\..\jni\yftp\Release\yftp.tlog\yftp.lastbuildstate" />
+    <None Include="..\..\jni\yftp\yftp.sdf" />
+    <None Include="..\..\jni\yftp\yftp.sln" />
+    <None Include="..\..\jni\yftp\yftp.vcxproj" />
+    <None Include="..\..\jni\yftp\yftp.vcxproj.filters" />
+    <None Include="..\..\jni\yftp\yftp.vcxproj.user" />
+    <None Include="..\..\src\com\yythac\yftpserver\DirChooserDialog.java" />
+    <None Include="..\..\src\com\yythac\yftpserver\MainActivity.java" />
+    <None Include="..\..\src\com\yythac\yftpserver\MyAdapter.java" />
+    <None Include="..\..\src\com\yythac\yftpserver\MyFileManager.java" />
+    <None Include="..\..\src\com\yythac\yftpserver\YFtpController.java" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\jni\com_yythac_yftpserver_YFtpController.cpp" />
+    <ClCompile Include="..\..\jni\YFtpServer.cpp" />
+    <ClCompile Include="..\..\jni\yftp\client_manager.cpp" />
+    <ClCompile Include="..\..\jni\yftp\client_node.cpp" />
+    <ClCompile Include="..\..\jni\yftp\common.cpp" />
+    <ClCompile Include="..\..\jni\yftp\connection.cpp" />
+    <ClCompile Include="..\..\jni\yftp\conversion.cpp" />
+    <ClCompile Include="..\..\jni\yftp\ftpserve_native.cpp" />
+    <ClCompile Include="..\..\jni\yftp\ftp_server.cpp" />
+    <ClCompile Include="..\..\jni\yftp\prebuild.cpp" />
+    <ClCompile Include="..\..\jni\yftp\reply.cpp" />
+    <ClCompile Include="..\..\jni\yftp\request_parser.cpp" />
+    <ClCompile Include="..\..\jni\yftp\server.cpp" />
+    <ClCompile Include="..\..\jni\yftp\user_manager.cpp" />
+    <ClCompile Include="..\..\jni\yftp\user_node.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\jni\connections.txt" />
+    <Text Include="..\..\jni\fileutils.txt" />
+    <Text Include="..\..\jni\opts.txt" />
+    <Text Include="..\..\jni\yftp\Debug\yftp.Build.CppClean.log" />
+    <Text Include="..\..\jni\yftp\Debug\yftp.log" />
+    <Text Include="..\..\jni\yftp\Release\yftp.Build.CppClean.log" />
+    <Text Include="..\..\jni\yftp\Release\yftp.log" />
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="..\..\jni\yftp\Debug\cftpserver.obj" />
+    <Object Include="..\..\jni\yftp\Debug\connection.obj" />
+    <Object Include="..\..\jni\yftp\Debug\conversion.obj" />
+    <Object Include="..\..\jni\yftp\Debug\ftpserve_native.obj" />
+    <Object Include="..\..\jni\yftp\Debug\main.obj" />
+    <Object Include="..\..\jni\yftp\Debug\mime_types.obj" />
+    <Object Include="..\..\jni\yftp\Debug\prebuild.obj" />
+    <Object Include="..\..\jni\yftp\Debug\reply.obj" />
+    <Object Include="..\..\jni\yftp\Debug\request_parser.obj" />
+    <Object Include="..\..\jni\yftp\Debug\server.obj" />
+    <Object Include="..\..\jni\yftp\Release\cftpserver.obj" />
+    <Object Include="..\..\jni\yftp\Release\connection.obj" />
+    <Object Include="..\..\jni\yftp\Release\conversion.obj" />
+    <Object Include="..\..\jni\yftp\Release\ftpserve_native.obj" />
+    <Object Include="..\..\jni\yftp\Release\main.obj" />
+    <Object Include="..\..\jni\yftp\Release\mime_types.obj" />
+    <Object Include="..\..\jni\yftp\Release\prebuild.obj" />
+    <Object Include="..\..\jni\yftp\Release\reply.obj" />
+    <Object Include="..\..\jni\yftp\Release\request_parser.obj" />
+    <Object Include="..\..\jni\yftp\Release\server.obj" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\jni\cmdparser.h" />
+    <ClInclude Include="..\..\jni\com_yythac_yftpserver_YFtpController.h" />
+    <ClInclude Include="..\..\jni\defines.h" />
+    <ClInclude Include="..\..\jni\fileutils.h" />
+    <ClInclude Include="..\..\jni\yftp\CFtpServer.h" />
+    <ClInclude Include="..\..\jni\yftp\client_manager.h" />
+    <ClInclude Include="..\..\jni\yftp\client_node.h" />
+    <ClInclude Include="..\..\jni\yftp\common.h" />
+    <ClInclude Include="..\..\jni\yftp\connection.hpp" />
+    <ClInclude Include="..\..\jni\yftp\conversion.h" />
+    <ClInclude Include="..\..\jni\yftp\error_code.h" />
+    <ClInclude Include="..\..\jni\yftp\ftpserver_native.h" />
+    <ClInclude Include="..\..\jni\yftp\ftp_server.h" />
+    <ClInclude Include="..\..\jni\yftp\header.hpp" />
+    <ClInclude Include="..\..\jni\yftp\mime_types.hpp" />
+    <ClInclude Include="..\..\jni\yftp\reply.hpp" />
+    <ClInclude Include="..\..\jni\yftp\request.hpp" />
+    <ClInclude Include="..\..\jni\yftp\request_handler.hpp" />
+    <ClInclude Include="..\..\jni\yftp\request_parser.hpp" />
+    <ClInclude Include="..\..\jni\yftp\server.hpp" />
+    <ClInclude Include="..\..\jni\yftp\user_manager.h" />
+    <ClInclude Include="..\..\jni\yftp\user_node.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

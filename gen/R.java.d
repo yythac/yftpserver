@@ -1,0 +1,21 @@
+D:\Users\qlibm\workspace\YFtpServer\gen\com\yythac\yftpserver\R.java \
+ : D:\Users\qlibm\workspace\YFtpServer\res\drawable\back01.png \
+D:\Users\qlibm\workspace\YFtpServer\res\drawable\back02.png \
+D:\Users\qlibm\workspace\YFtpServer\res\drawable\doc.png \
+D:\Users\qlibm\workspace\YFtpServer\res\drawable\folder.png \
+D:\Users\qlibm\workspace\YFtpServer\res\drawable\icon.png \
+D:\Users\qlibm\workspace\YFtpServer\res\drawable\listview_selected.xml \
+D:\Users\qlibm\workspace\YFtpServer\res\drawable-hdpi\ic_launcher.png \
+D:\Users\qlibm\workspace\YFtpServer\res\drawable-mdpi\ic_launcher.png \
+D:\Users\qlibm\workspace\YFtpServer\res\drawable-xhdpi\ic_launcher.png \
+D:\Users\qlibm\workspace\YFtpServer\res\drawable-xxhdpi\ic_launcher.png \
+D:\Users\qlibm\workspace\YFtpServer\res\layout\activity_main.xml \
+D:\Users\qlibm\workspace\YFtpServer\res\layout\chooserdialog.xml \
+D:\Users\qlibm\workspace\YFtpServer\res\layout\fileselect.xml \
+D:\Users\qlibm\workspace\YFtpServer\res\layout\file_row.xml \
+D:\Users\qlibm\workspace\YFtpServer\res\values\color.xml \
+D:\Users\qlibm\workspace\YFtpServer\res\values\strings.xml \
+D:\Users\qlibm\workspace\YFtpServer\res\values\styles.xml \
+D:\Users\qlibm\workspace\YFtpServer\res\values-v11\styles.xml \
+D:\Users\qlibm\workspace\YFtpServer\res\values-v14\styles.xml \
+D:\Users\qlibm\workspace\YFtpServer\bin\AndroidManifest.xml \

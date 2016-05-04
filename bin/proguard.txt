@@ -1,0 +1,6 @@
+# view AndroidManifest.xml #generated:16
+-keep class com.yythac.yftpserver.MainActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:22
+-keep class com.yythac.yftpserver.MyFileManager { <init>(...); }
+
