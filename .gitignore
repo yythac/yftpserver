@@ -7,7 +7,7 @@
 # Precompiled Headers
 *.gch
 *.pch
-
+*.sdf
 # Compiled Dynamic libraries
 *.so
 *.dylib
@@ -26,3 +26,12 @@
 *.exe
 *.out
 *.app
+
+#Pack files
+*.zip
+*.rar
+
+#Other VC files
+*.log
+*.pdb
+*.idb
