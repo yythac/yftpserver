@@ -42,7 +42,7 @@ namespace ftp {
 			cur_data_mode_ = ftp_data_mode::mode_none;
 			cur_status_ = ftp_client_status::status_waiting;
 			is_logged_ = false;
-			is_anonymous_ = true;
+			is_anonymous_ = false;
 			user_ = nullptr;
 			code_type_ = codetype::utf8;
 			binary_mode_ = true;
@@ -237,8 +237,22 @@ namespace ftp {
 					user_ = user_manager.find_user(cmd_arg);
 					if (user_ && user_->is_enable() == false)
 						user_ = nullptr;
-					ftpreply.create(331, L"Password required for this user.");
-
+					if (user_ != nullptr)
+					{
+						if (user_->add_client(shared_from_this()) == true)
+						{
+							ftpreply.create(331, L"Password required for this user.");
+						}
+						else
+						{
+							ftpreply.create(550, L"Internal Error-Can't add client.");
+							ret = false;
+						}
+					}
+					else
+					{
+						ftpreply.create(331, L"Password required for this user.");
+					}
 				}
 
 			}
@@ -268,23 +282,27 @@ namespace ftp {
 						cmd_arg == user_->get_user_password())
 					{
 
-						if (user_->add_client(shared_from_this()) == true)
+						//if (user_->add_client(shared_from_this()) == true)
 						{
 
 							is_logged_ = true;
 							ftpreply.create(230, L"User Logged In.");
 
 						}
-						else
+						/*else
 						{
 							ftpreply.create(421, L"Too many users logged in for this account.");
 							ret = false;
-						}
+						}*/
 
 					}
 					else
 					{
-
+						if (user_ != nullptr)
+						{
+							user_->get_client_manager().delete_client(shared_from_this());
+							user_ = nullptr;
+						}
 						ftpreply.create(530, L"Please login with valid USER and PASS.");
 #ifdef CFTPSERVER_ANTIBRUTEFORCING
 						ret = false;
@@ -295,6 +313,11 @@ namespace ftp {
 				}
 				else
 				{
+					if (user_ != nullptr)
+					{
+						user_->get_client_manager().delete_client(shared_from_this());
+						user_ = nullptr;
+					}
 					ftpreply.create(501, L"Invalid number of arguments.");
 				}
 

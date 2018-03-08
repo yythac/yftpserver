@@ -1,0 +1,6 @@
+eclipse.preferences.version=1
+environment/project/com.android.toolchain.gcc.1413444554/CYGWIN/delimiter=;
+environment/project/com.android.toolchain.gcc.1413444554/CYGWIN/operation=replace
+environment/project/com.android.toolchain.gcc.1413444554/CYGWIN/value=D\:\\softwares\\mingw
+environment/project/com.android.toolchain.gcc.1413444554/append=true
+environment/project/com.android.toolchain.gcc.1413444554/appendContributed=true

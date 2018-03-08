@@ -46,7 +46,7 @@ using namespace boost::filesystem;
 
 #else
 
-#include <../../../common/c/JniLog.h>
+#include "../common/c/JniLog.h"
 
 #endif
 
