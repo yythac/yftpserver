@@ -28,13 +28,15 @@ namespace ftp {
 		 * CONSTRUCTOR && DESTRUCTOR
 		 ***************************************/
 
+		data_port_range ftp_server::data_port_range_ = { 0 };
+
 		ftp_server::ftp_server(void)
 		{
 
 			int i = 0;
 
-			this->data_port_range_.start = 10000;
-			this->data_port_range_.num = 10200;
+//			this->data_port_range_.start = 0;
+//			this->data_port_range_.num = 0;
 
 			this->is_allow_anonymous_ = false;
 
@@ -60,6 +62,8 @@ namespace ftp {
 		bool ftp_server::add_user(const wstring& name, const wstring& password
 			, const wstring& home_dir, unsigned char priv)
 		{
+			last_error_.set_error_code(0);
+
 			if (name == L"anonymous" || name == L"ftp")
 			{
 				last_error_.set_error_code(YFTP_ERROR_USERNAME_INVALID);
@@ -81,6 +85,7 @@ namespace ftp {
 
 		bool ftp_server::allow_anonymous(bool do_allow, const std::wstring& home_dir, unsigned char priv)
 		{
+			last_error_.set_error_code(0);
 
 			if (do_allow == true)
 			{
@@ -161,12 +166,14 @@ namespace ftp {
 
 			boost::tribool tribresult;
 
-			request_parser_.set_status(client->get_is_logged());
-			tribresult = request_parser_.parse(cmd, pdata, datalen, ftpreply);
+			client->get_parser().set_status(client->get_is_logged());
+			tribresult = client->get_parser().parse(cmd, pdata, datalen, ftpreply);
 			if (tribresult != true)
 			{
 				return true;
 			}
+
+			//YDEBUG_OUT("ftp server recv:%s", pdata);
 
 			switch (cmd.id)
 			{
@@ -311,6 +318,7 @@ namespace ftp {
 			}
 			case commands::LIST:
 			case commands::NLST:
+			case commands::MLSD:
 			{
 				ret = client->process_list_cmd( cmd, ftpreply);
 				break;

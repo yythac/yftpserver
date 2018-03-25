@@ -18,11 +18,8 @@
 #include "ftp_server.h"
 #include "ftpserver_native.h"
 
-#define SERVER_APP
 
 #ifdef SERVER_APP
-
-#include "ycommon_server_app.h"
 
 class FtpServerApp : public YCOMMON::YSERVER::ycommon_server_app
 {
@@ -31,34 +28,65 @@ protected:
 
 	virtual int main(const std::vector<std::string>& args) override
 	{
-		//cout << "Begin to init Y-FTP server.......";
+		YINFO_OUT("Begin to init Ftp Server.......");
+		
+		int ret = 0;
+
+		vector<string> vStr;
+		char* port_range = nullptr;
+		char* ftp_user = nullptr;
 
 		char *root_dir = this->get_string("ftp.server.root_dir", ""); 
-		bool allow_anonymous = !(this->get_int("ftp.server.allow_anonymous", 1) == 0);
-		YINFO_OUT("Ftp Server Root Dir:%s,Is Allow Anonymous:%s", root_dir, allow_anonymous ? "true" : "false");
-		if (allow_anonymous)
+		char *allow_anonymous = this->get_string("ftp.server.allow_anonymous", "1::rwd");
+		YINFO_OUT("Ftp Server Root Dir:%s", root_dir);
+		YINFO_OUT("Anonymous User Info:%s", allow_anonymous);
+		if (allow_anonymous[0] != 0)
 		{
-			if (ftp_server_.allow_anonymous(allow_anonymous, s2ws(root_dir).c_str(), FTP_USER_PRIV_ALL) == false)
+			vStr.clear();
+			boost::split(vStr, allow_anonymous, boost::is_any_of(":;,"), boost::token_compress_off);
+			if (vStr.size() != 3)
 			{
-				YCOMMON::GLOBAL::ycommon_free(root_dir);
-				YFATAL_OUT("Ftp Server Allow Anonymous Error!!!");
-				return -1;
+				YFATAL_OUT("Ftp Server Anonymous User Info Invalid!!!");
+				ret = -1;
+				goto end;
+			}
+			string user_dir = root_dir;
+			if (user_dir.back() != '\\'
+				&& user_dir.back() != '/')
+			{
+				user_dir.push_back(path::preferred_separator);
+			}
+			user_dir += vStr[1];
+			unsigned char priv = 0;
+			for (auto c : vStr[2])
+			{
+				if (c == 'r')
+					priv = priv | (unsigned char)FTP_USER_PRIV_READ;
+				else if (c == 'w')
+					priv = priv | (unsigned char)FTP_USER_PRIV_WRITE;
+				else if (c == 'd')
+					priv = priv | (unsigned char)FTP_USER_PRIV_DEL;
+			}
+			if (ftp_server_.allow_anonymous(vStr[0] == "1", s2ws(user_dir).c_str(), priv) == false)
+			{
+				YFATAL_OUT("Ftp Server Allow Anonymous Error:%s!!!", ws2s(ftp_server_.get_last_error_string()).c_str());
+				ret = -1;
+				goto end;
 			}
 		}
 
-		char* ftp_user = this->get_string("ftp.server.user1", ""); // = "tester1:123456:IconLib:rwd";
+		ftp_user = this->get_string("ftp.server.user1", ""); // = "tester1:123456:IconLib:rwd";
 		if (ftp_user[0] != 0)
 		{
-			YINFO_OUT("FTP Server User Infomation:%s", ftp_user);
-			vector<string> vStr;
+			YINFO_OUT("Ftp Server User Infomation:%s", ftp_user);
+
 			vStr.clear();
 			boost::split(vStr, ftp_user, boost::is_any_of(":;,"), boost::token_compress_off);
 			if (vStr.size() != 4)
 			{
-				YCOMMON::GLOBAL::ycommon_free(root_dir);
-				YCOMMON::GLOBAL::ycommon_free(ftp_user);
 				YFATAL_OUT("Ftp Server User Info Invalid!!!");
-				return -1;
+				ret = -1;
+				goto end;
 			}
 			unsigned char priv = 0;
 			for (auto c : vStr[3])
@@ -80,17 +108,51 @@ protected:
 			user_dir += vStr[2];
 			if (ftp_server_.add_user(s2ws(vStr[0]).c_str(), s2ws(vStr[1]).c_str(), s2ws(user_dir).c_str(), priv) == false)
 			{
-				YCOMMON::GLOBAL::ycommon_free(root_dir);
-				YCOMMON::GLOBAL::ycommon_free(ftp_user);
-				YFATAL_OUT("Ftp Server Add User Error!!!");
-				return -1;
+				YFATAL_OUT("Ftp Server Add User Error:%s!!!", ws2s(ftp_server_.get_last_error_string()).c_str());
+				ret = -1;
+				goto end;
 			}
 
 		}
+
+		if (allow_anonymous[0] == 0 && ftp_user[0] == 0)
+		{
+			YFATAL_OUT("Ftp Server No User Infomation!!!");
+			ret = -1;
+			goto end;
+		}
+		port_range = this->get_string("ftp.server.pasv_port_range", "0-0");
+		if (port_range[0] != 0 && strcmp(port_range ,"0-0") != 0)
+		{
+			YINFO_OUT("Ftp Server pasv port range:%s", port_range);
+
+			vStr.clear();
+			boost::split(vStr, port_range, boost::is_any_of("-: "), boost::token_compress_on);
+			if (vStr.size() != 2)
+			{
+				YERROR_OUT("ftp.server.pasv_port_range is Invalid!");
+			}
+			else
+			{
+				unsigned short start_port = atoi(vStr[0].c_str());
+				unsigned short end_port = atoi(vStr[1].c_str());
+				if (ftp_server_.set_data_port_range(start_port, end_port - start_port + 1) == false)
+				{
+					YERROR_OUT("Set data port range error!");
+				}
+			}
+		}
+		this->set_default_server_addr(21);
+		this->set_default_is_use_ssl(false);
+		this->set_default_is_use_raw_data(true);
+end:
+
 		YCOMMON::GLOBAL::ycommon_free(root_dir);
 		YCOMMON::GLOBAL::ycommon_free(ftp_user);
+		YCOMMON::GLOBAL::ycommon_free(port_range);
+		YCOMMON::GLOBAL::ycommon_free(allow_anonymous);
 
-		return 0;
+		return ret;
 	}
 	//·µ»Ø·þÎñÆ÷Ë½Ô¿ÃÜÂë
 	virtual std::string& get_key_file_password() const override
@@ -150,7 +212,10 @@ private:
 };
 
 YCOMMON_SERVER_MAIN(FtpServerApp)
+			
+			
 #else
+
 
 void usage(char *app)
 {

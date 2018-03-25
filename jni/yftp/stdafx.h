@@ -22,3 +22,18 @@
 #ifdef WIN32
 #define _CRT_SECURE_NO_WARNINGS
 #endif
+
+#define SERVER_APP
+
+#ifdef SERVER_APP
+
+#include "ycommon_server_app.h"
+#else
+
+#define YFATAL_OUT(...)		;
+#define YERROR_OUT(...)		;
+#define YWARNING_OUT(...)	;
+#define YINFO_OUT(...)		;
+#define YDEBUG_OUT(...)	
+
+#endif

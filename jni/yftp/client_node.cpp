@@ -9,6 +9,7 @@
 #include "stdafx.h"
 #include "user_manager.h"
 #include "client_node.h"
+#include "ftp_server.h"
 
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
@@ -28,8 +29,8 @@ namespace ftp {
 			this->month_string[i++] = L"Sep"; this->month_string[i++] = L"Oct";
 			this->month_string[i++] = L"Nov"; this->month_string[i++] = L"Dec";
 
-			this->data_port_range_.start = 10000;
-			this->data_port_range_.num = 10200;
+			//this->data_port_range_.start = 10000;
+			//this->data_port_range_.num = 10200;
 
 			data_acceptor_ = nullptr;
 			data_socket_ = nullptr;
@@ -135,9 +136,16 @@ namespace ftp {
 				{
 					return false;
 				}
+#ifdef WIN32
+				int timeout = 20000; //20s
+#else
+				struct timeval timeout = { 20,0 };//20s
+#endif
+				setsockopt(data_acceptor_->native_handle(), SOL_SOCKET, SO_SNDTIMEO, (char*)&timeout, sizeof(timeout));
 
 				data_acceptor_->accept(*data_socket_, ec);
 				close_socket(data_acceptor_);
+
 				return !ec;
 
 			}
@@ -158,7 +166,14 @@ namespace ftp {
 				boost::asio::ip::tcp::endpoint endpoint;
 
 				data_socket_->set_option(boost::asio::ip::tcp::acceptor::reuse_address(true), ec);
+#ifdef WIN32
+				int timeout = 20000; //20s
+#else
+				struct timeval timeout = { 20,0 };//20s
+#endif
+				setsockopt(data_socket_->native_handle(), SOL_SOCKET, SO_SNDTIMEO, (char*)&timeout, sizeof(timeout));
 
+/*
 #ifdef __ECOS
 				endpoint.address = boost::asio::ip::address(boost::asio::ip::address_v4::any());
 
@@ -174,7 +189,7 @@ namespace ftp {
 				{
 					return false;
 				}
-
+*/
 				endpoint.address(boost::asio::ip::address(boost::asio::ip::address_v4(data_ip_)));
 				endpoint.port(data_port_);
 
@@ -427,10 +442,12 @@ namespace ftp {
 
 				if (cur_data_mode_ != ftp_data_mode::mode_none)
 				{
+					if (data_acceptor_ != nullptr)
+						close_socket(data_acceptor_);
+					if (data_socket_ != nullptr)
+						close_data_socket();
 
-					close_socket(data_socket_);
 					cur_data_mode_ = ftp_data_mode::mode_none;
-
 				}
 				if (data_socket_ == nullptr)
 					data_socket_ = make_shared<boost::asio::ip::tcp::socket>(io_service_);
@@ -484,11 +501,14 @@ namespace ftp {
 
 			if (cur_data_mode_ != ftp_data_mode::mode_none)
 			{
+				if(data_acceptor_ != nullptr)
+					close_socket(data_acceptor_);
+				if (data_socket_ != nullptr)
+					close_data_socket();
 
-				close_socket(data_acceptor_);
 				cur_data_mode_ = ftp_data_mode::mode_none;
-
 			}
+
 			if(data_acceptor_ == nullptr)
 				data_acceptor_ = make_shared<boost::asio::ip::tcp::acceptor>(io_service_);
 			if (data_acceptor_ == nullptr)
@@ -504,7 +524,8 @@ namespace ftp {
 
 			boost::asio::ip::tcp::endpoint endpoint;
 
-			data_acceptor_->set_option(boost::asio::ip::tcp::acceptor::reuse_address(true),ec);
+		//	data_acceptor_->set_option(boost::asio::ip::tcp::acceptor::reuse_address(true),ec);
+
 
 #ifdef __ECOS
 			endpoint.address(boost::asio::ip::address(boost::asio::ip::address_v4::any()));
@@ -513,31 +534,46 @@ namespace ftp {
 			endpoint.address(boost::asio::ip::address(boost::asio::ip::address_v4(server_ip_)));
 
 #endif
-
-			int checked_port_count = 0;
-			do 
+//			time_t now;
+//			srand((unsigned int)time(&now));
+			if (ftp_server::data_port_range_.num == 0)
 			{
+				data_port_ = 0;
+				endpoint.port(data_port_);
+				if (data_acceptor_->bind(endpoint, ec)
+					|| data_acceptor_->listen(1, ec))
+				{
+					close_socket(data_acceptor_);
+					ftpreply.create(451, L"Internal error - Binding Or Listening failed.");
+					return true;
+				}
+				data_port_ = data_acceptor_->local_endpoint().port();
+			}
+			else
+			{
+				std::lock_guard<std::mutex> lock(port_lock_);
 
-				if (checked_port_count >= data_port_range_.num) 
+				static unsigned short cur_end_port = ftp_server::data_port_range_.start;
+				int checked_port_count = 0;
+				do
 				{
 
-					checked_port_count = -1;
-					close_socket(data_acceptor_);
-					break;
+					if (checked_port_count >= 10)
+					{
+						close_socket(data_acceptor_);
+						ftpreply.create(451, L"Internal error - No more data port available.");
+						return true;
+					}
+					checked_port_count++;
+					data_port_ = (unsigned short)(cur_end_port++);
+					endpoint.port(data_port_);
+					if (cur_end_port > (ftp_server::data_port_range_.start + ftp_server::data_port_range_.num))
+					{
+						cur_end_port = ftp_server::data_port_range_.start;
+					}
 
-				}
-				checked_port_count++;
-				data_port_ = (unsigned short)(data_port_range_.start + (rand() % data_port_range_.num));
-				endpoint.port( data_port_);
-
-			} while (data_acceptor_->bind(endpoint,ec) 
-				|| data_acceptor_->listen(1,ec));
-
-			if (checked_port_count == -1) 
-			{
-
-				ftpreply.create(451,L"Internal error - No more data port available.");
-				return true;
+				} while (data_acceptor_->bind(endpoint, ec)
+					|| data_acceptor_->listen(1, ec));
 
 			}
 
@@ -561,9 +597,9 @@ namespace ftp {
 
 			if (cmd.id != commands::STAT) 
 			{
+				this->cur_status_ = ftp_client_status::status_listing;
 				send_reply(150,L"Opening data connection for directory list.");
 				is_ctrl = false;
-				this->cur_status_ = ftp_client_status::status_listing;
 
 			}
 			else
@@ -776,16 +812,16 @@ namespace ftp {
 			}
 			else
 			{
-
+				shut_down_data_socket();
 				close_data_socket();
 				{
 					std::lock_guard<std::mutex> lock(ctrl_socket_lock_);
 					if (is_ctrl_canal_open_ == true)
 					{
-						send_reply(226, L"Transfer complete.");
-
 						this->cur_data_mode_ = ftp_data_mode::mode_none;
 						this->cur_status_ = ftp_client_status::status_waiting;
+						send_reply(226, L"Transfer complete.");
+
 					}
 				}
 
@@ -949,7 +985,7 @@ namespace ftp {
 		{
 			if (cur_status_ != ftp_client_status::status_waiting) 
 			{
-				close_socket(data_socket_);
+				close_data_socket();
 				cur_status_ = ftp_client_status::status_waiting;
 				cur_data_mode_ = ftp_data_mode::mode_none;
 				send_reply(426, L"Previous command has been finished abnormally.");
@@ -1013,6 +1049,8 @@ namespace ftp {
 					current_transfer_.transfer_path_ = tmp_path;
 
 					ftpreply.create(150,L"Opening data connection.");
+					send_reply(ftpreply);
+					ftpreply.create(0, L"");
 
 					boost::thread t1(boost::bind(&client_node::retrieve_thread, this));
 					if (t1.joinable() == false)
@@ -1136,6 +1174,8 @@ namespace ftp {
 					{
 						ftpreply.create(150,L"Opening data connection.");
 					}
+					send_reply(ftpreply);
+					ftpreply.create(0, L"");
 
 					boost::thread t1(boost::bind(&client_node::store_thread, this));
 					if (t1.joinable() == false)
@@ -1410,6 +1450,8 @@ namespace ftp {
 				mode |= std::ios_base::trunc; //w|b
 			}
 
+			//YDEBUG_OUT("data_socket_->is_open()=%d", data_socket_->is_open());
+
 			boost::filesystem::ofstream ofs;
 				
 			ofs.open(current_transfer_.transfer_path_, mode);
@@ -1423,42 +1465,52 @@ namespace ftp {
 				}
 				if (ofs.good() == true)
 				{
+					int i = 0;
 					boost::system::error_code ec;
 					char *pBuffer = new char[CFTPSERVER_TRANSFER_BUFFER_SIZE];
 
 					while (data_socket_->is_open() == true && ofs.good() == true) 
 					{
 						len = data_socket_->read_some(boost::asio::buffer(pBuffer, CFTPSERVER_TRANSFER_BUFFER_SIZE), ec);
-						if (len > 0) 
+						if (ec)
 						{
-							ofs.write(pBuffer, len);
-
+							if (ec != boost::asio::error::eof)
+							{
+								YERROR_OUT("store_thread::read_some error:%s", boost::system::system_error(ec).what());
+								len = -1;
+							}
+							break; // Connection closed cleanly by peer.
 						}
-						else
-							break;
-
+						ofs.write(pBuffer, len);
+						if(++i%1000 == 0)
+							boost::this_thread::yield();
 					}
 					delete[] pBuffer;
 
 				}
 				if (ofs.bad() == true)
 				{
-
 					len = -1;
 				}
 				ofs.close();
 			}
 			else
 			{
-
 				len = -1;
 			}
 
+		//	YDEBUG_OUT("len=%X,data_socket_->is_open()=%d", len, data_socket_->is_open());
+			shut_down_data_socket();
 			close_data_socket();
 			{
 				std::lock_guard<std::mutex> lock(ctrl_socket_lock_);
 				if (is_ctrl_canal_open_ == true)
 				{
+
+					memset(&current_transfer_, 0x0, sizeof(current_transfer_));
+					cur_data_mode_ = ftp_data_mode::mode_none;
+					this->cur_status_ = ftp_client_status::status_waiting;
+
 					if (len == 0)
 					{
 						send_reply(226, L"Transfer complete.");
@@ -1468,10 +1520,6 @@ namespace ftp {
 						send_reply(550, L"Can 't receive file.");
 					}
 
-
-					memset(&current_transfer_, 0x0, sizeof(current_transfer_));
-					cur_data_mode_ = ftp_data_mode::mode_none;
-					this->cur_status_ = ftp_client_status::status_waiting;
 				}
 			}
 
@@ -1493,6 +1541,7 @@ namespace ftp {
 				}
 				if (in.good())
 				{
+					int i = 0;
 					boost::system::error_code ec;
 					char *pBuffer = new char[CFTPSERVER_TRANSFER_BUFFER_SIZE];
 
@@ -1504,6 +1553,8 @@ namespace ftp {
 						len = boost::asio::write(*data_socket_, boost::asio::buffer(pBuffer, (size_t)BlockSize), ec);
 						if (len <= 0)
 							break;
+						if (++i % 1000 == 0)
+							boost::this_thread::yield();
 
 					}
 					delete[] pBuffer;
@@ -1520,12 +1571,17 @@ namespace ftp {
 				len = -1;
 			}
 
+			shut_down_data_socket();
 			close_data_socket();
 
 			{
 				std::lock_guard<std::mutex> lock(ctrl_socket_lock_);
 				if (is_ctrl_canal_open_ == true)
 				{
+
+					memset(&current_transfer_, 0x0, sizeof(current_transfer_));
+					cur_data_mode_ = ftp_data_mode::mode_none;
+					this->cur_status_ = ftp_client_status::status_waiting;
 					if (len >= 0)
 					{
 
@@ -1537,10 +1593,6 @@ namespace ftp {
 						send_reply(550, L"550 Can 't Send File.");
 					}
 
-
-					memset(&current_transfer_, 0x0, sizeof(current_transfer_));
-					cur_data_mode_ = ftp_data_mode::mode_none;
-					this->cur_status_ = ftp_client_status::status_waiting;
 				}
 			}
 

@@ -67,7 +67,17 @@ namespace ftp {
 			/* Destructor */
 			~ftp_server(void);
 
+			static data_port_range data_port_range_;
 
+			//获取错误码
+			int get_last_error()
+			{
+				return last_error_.get_error_code();
+			}
+			wstring get_last_error_string()
+			{
+				return last_error_.to_string();
+			}
 			/* Set the TCP Port Range ftp_server can use to Send and Receive Files or Data.
 			Arguments:
 			-the First Port of the Range.
@@ -167,7 +177,7 @@ namespace ftp {
 		private:
 
 			user_manager user_manager_;
-			request_parser request_parser_;
+			//request_parser request_parser_;
 			//错误处理
 			error_manager last_error_;
 			/*****************************************
@@ -176,7 +186,6 @@ namespace ftp {
 
 			bool is_allow_anonymous_;
 
-			data_port_range data_port_range_;
 		};
 	}
 }

@@ -13,9 +13,9 @@ OBJCOPY := objcopy
 
 #Additional flags
 PREPROCESSOR_MACROS := DEBUG
-INCLUDE_DIRS := /usr/local/include/boost
-LIBRARY_DIRS := 
-LIBRARY_NAMES := 
+INCLUDE_DIRS := /home/tester/myprojects/common/ycommonserver/include /usr/local/include/boost/boost /usr/local/include/boost
+LIBRARY_DIRS := /home/tester/myprojects/common/ycommonserver/lib /usr/local/lib
+LIBRARY_NAMES := ycommonserverlibd ssl crypto boost_system boost_log boost_log_setup boost_chrono boost_thread boost_filesystem boost_locale PocoUtild PocoJSONd PocoXMLd PocoFoundationd pthread dl
 ADDITIONAL_LINKER_INPUTS := 
 MACOS_FRAMEWORKS := 
 LINUX_PACKAGES := 
@@ -23,7 +23,7 @@ LINUX_PACKAGES :=
 CFLAGS := -ggdb -ffunction-sections -O0
 CXXFLAGS := -ggdb -ffunction-sections -O0  -std=c++11
 ASFLAGS := 
-LDFLAGS := -Wl,-gc-sections -lpthread
+LDFLAGS := -Wl,-gc-sections  -static-libstdc++ -static
 COMMONFLAGS := 
 
 START_GROUP := -Wl,--start-group

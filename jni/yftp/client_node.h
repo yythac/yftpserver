@@ -124,7 +124,13 @@ namespace ftp {
 			{
 				current_directory_ = dir;
 			}
+			request_parser &get_parser()
+			{
+				return request_parser_;
+			}
 		private:
+			request_parser request_parser_;
+
 			boost::asio::io_service io_service_;
 
 			boost::asio::ip::tcp::socket* ctrl_socket_;
@@ -132,6 +138,8 @@ namespace ftp {
 			shared_ptr<boost::asio::ip::tcp::socket> data_socket_;
 
 			shared_ptr<boost::asio::ip::tcp::acceptor> data_acceptor_;
+
+			mutex port_lock_;
 
 			//in host byte order
 			unsigned long server_ip_;
@@ -178,7 +186,7 @@ namespace ftp {
 
 			bool is_ctrl_canal_open_;
 
-			data_port_range data_port_range_;
+			//data_port_range data_port_range_;
 
 			const wchar_t *month_string[12];
 
@@ -198,7 +206,13 @@ namespace ftp {
 			bool send_reply(reply& ftpreply, bool is_ctrl = true);
 			bool send_reply(unsigned short status_code, const wstring& reply_string);
 
+			bool shut_down_data_socket()
+			{
+				boost::system::error_code ec;
+				data_socket_->shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
+				return !ec;
 
+			}
 			bool close_data_socket()
 			{
 				return close_socket(data_socket_);

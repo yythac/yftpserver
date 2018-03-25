@@ -801,6 +801,8 @@
 #endif
 
 // --- Include directories begin --- //
+///home/tester/myprojects/common/ycommonserver/include
+///usr/local/include/boost/boost
 ///usr/local/include/boost
 ///usr/local/lib/gcc/x86_64-unknown-linux-gnu/5.3.0/../../../../include/c++/5.3.0
 ///usr/local/lib/gcc/x86_64-unknown-linux-gnu/5.3.0/../../../../include/c++/5.3.0/x86_64-unknown-linux-gnu

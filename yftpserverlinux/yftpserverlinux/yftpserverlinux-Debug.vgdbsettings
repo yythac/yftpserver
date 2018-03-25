@@ -18,7 +18,7 @@
         <Transport>SSH</Transport>
         <UserName>root</UserName>
       </RemoteHost>
-      <LocalDirectory>D:\Users\qlibm\workspace\YFtpServer\jni\yftp</LocalDirectory>
+      <LocalDirectory>D:\softwares\PortableGit\yftpserver\jni\yftp</LocalDirectory>
       <RemoteDirectory>/home/tester/myprojects/yftpserver</RemoteDirectory>
       <FileMasks>
         <string>*.cpp</string>
@@ -149,7 +149,7 @@
           <UserName>root</UserName>
         </RemoteHost>
         <Command>/usr/bin/cp</Command>
-        <Arguments>$(TargetPath) $(SourceDir)/../release</Arguments>
+        <Arguments>$(TargetPath) $(SourceDir)/../debug</Arguments>
         <WorkingDirectory />
         <Environment>
           <Records />
@@ -170,7 +170,7 @@
   </CustomShortcuts>
   <UserDefinedVariables />
   <CodeSense>
-    <Enabled>True</Enabled>
+    <Enabled>False</Enabled>
     <CFLAGS />
     <CXXFLAGS />
     <ExternalSourceFileList />

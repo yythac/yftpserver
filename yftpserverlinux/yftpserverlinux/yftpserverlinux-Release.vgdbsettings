@@ -18,7 +18,7 @@
         <Transport>SSH</Transport>
         <UserName>root</UserName>
       </RemoteHost>
-      <LocalDirectory>D:\Users\qlibm\workspace\YFtpServer\jni\yftp</LocalDirectory>
+      <LocalDirectory>D:\softwares\PortableGit\yftpserver\jni\yftp</LocalDirectory>
       <RemoteDirectory>/home/tester/myprojects/yftpserver</RemoteDirectory>
       <FileMasks>
         <string>*.cpp</string>
