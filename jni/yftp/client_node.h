@@ -15,8 +15,8 @@
 
 #include <boost/asio.hpp>
 
-#include "reply.hpp"
-#include "request_parser.hpp"
+#include "reply.h"
+#include "request_parser.h"
 //#include "user_node.h"
 
 #define CFTPSERVER_TRANSFER_BUFFER_SIZE (8 * 1024)
@@ -26,7 +26,7 @@
 namespace ftp {
 	namespace server {
 
-		/* Enum the differents Modes of Connection for transfering Data. */
+		//数据传输模式
 		enum class ftp_data_mode
 		{
 			mode_none,
@@ -34,7 +34,7 @@ namespace ftp {
 			mode_port
 		};
 
-		/* enum the differents status a client can got. */
+		//数据传输状态
 		enum class ftp_client_status
 		{
 			status_waiting = 0,
@@ -42,7 +42,7 @@ namespace ftp {
 			status_uploading,
 			status_downloading
 		};
-
+		//数据端口范围
 		typedef	struct tag_data_port_range
 		{
 			int num;
@@ -62,10 +62,12 @@ namespace ftp {
 		public:
 			client_node();
 			~client_node();
-
+			//连接开始
 			bool start(boost::asio::ip::tcp::socket& ctrl_socket);
+			//连接结束
 			bool end();
 
+			//ftp命令处理函数
 			bool process_user_cmd(bool is_allow_anonymous, user_manager& user_manager, wstring cmd_arg, reply& ftpreply);
 			bool process_password_cmd(wstring cmd_arg, reply& ftpreply);
 			bool process_site_cmd(wstring cmd_arg, reply& ftpreply);
@@ -88,38 +90,47 @@ namespace ftp {
 			bool process_mkd_cmd(wstring cmd_arg, reply& ftpreply);
 			bool process_rmd_cmd(wstring cmd_arg, reply& ftpreply);
 
+			//获取字符编码
 			codetype get_code_type()
 			{
 				return  code_type_;
 			}
+			//设置字符编码
 			void set_code_type(codetype type)
 			{
 				code_type_ = type;
 			}
+			//获取登录状态
 			bool get_is_logged()
 			{
 				return is_logged_;
 			}
+			//获取当前连接socket
 			boost::asio::ip::tcp::socket* get_ctrl_socket()
 			{
 				return ctrl_socket_;
 			}
+			//设置当前连接socket
 			void set_ctrl_socket(boost::asio::ip::tcp::socket* ctrl_socket)
 			{
 				ctrl_socket_ = ctrl_socket;
 			}
+			//设置服务器ip
 			void set_server_ip(unsigned long ip)
 			{
 				server_ip_ = ip;
 			}
+			//设置客户端ip
 			void set_client_ip(unsigned long ip)
 			{
 				client_ip_ = ip;
 			}
+			//获取当前目录
 			const std::wstring& get_current_directory()
 			{
 				return current_directory_;
 			}
+			//设置当前目录
 			void set_current_directory(const std::wstring& dir)
 			{
 				current_directory_ = dir;
@@ -186,8 +197,6 @@ namespace ftp {
 
 			bool is_ctrl_canal_open_;
 
-			//data_port_range data_port_range_;
-
 			const wchar_t *month_string[12];
 
 			mutex ctrl_socket_lock_;
@@ -219,14 +228,13 @@ namespace ftp {
 
 			}
 
-			/* Open a Socket. */
 			template <class T> bool open_socket(T& sock)
 			{
 				boost::system::error_code ec;
 				sock->open(boost::asio::ip::tcp::v4(), ec);
 				return !ec;
 			}
-			/* Close a Socket. */
+
 			template <class T> bool close_socket(T& sock)
 			{
 				boost::system::error_code ec;

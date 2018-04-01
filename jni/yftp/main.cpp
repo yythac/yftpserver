@@ -14,7 +14,7 @@
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
-#include "server.hpp"
+#include "server.h"
 #include "ftp_server.h"
 #include "ftpserver_native.h"
 

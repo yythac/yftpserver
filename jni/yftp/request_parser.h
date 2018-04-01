@@ -13,7 +13,7 @@
 #include <string>
 #include <boost/logic/tribool.hpp>
 #include <boost/tuple/tuple.hpp>
-#include "reply.hpp"
+#include "reply.h"
 
 
 namespace ftp {
@@ -91,8 +91,7 @@ public:
 
   /// Parse some data. The tribool return value is true when a complete request
   /// has been parsed, false if the data is invalid, indeterminate when more
-  /// data is required. The InputIterator return value indicates how much of the
-  /// input has been consumed.
+  /// data is required.
   boost::tribool parse(t_command& cmd,char *pdata, int datalen, reply& result);
   void set_status(bool blogon)
   {

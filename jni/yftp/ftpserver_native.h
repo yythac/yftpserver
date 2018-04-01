@@ -1,7 +1,7 @@
 #ifndef FTPSERVER_NATIVE_H
 #define FTPSERVER_NATIVE_H
 
-#include "server.hpp"
+#include "server.h"
 #include "ftp_server.h"
 
 bool init_ftp_server(bool bDoAllow, const wchar_t *szusername,const wchar_t *szpassword

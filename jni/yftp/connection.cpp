@@ -7,7 +7,7 @@
 */
 
 #include "stdafx.h"
-#include "connection.hpp"
+#include "connection.h"
 #include <vector>
 #include <boost/bind.hpp>
 

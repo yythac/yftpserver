@@ -29,7 +29,7 @@ public class YFtpController {
 	
 	static {
 		try {
-			// ´Ë´¦¼´Îª±¾µØ·½·¨ËùÔÚÁ´½Ó¿âÃû
+			// æ­¤å¤„å³ä¸ºæœ¬åœ°æ–¹æ³•æ‰€åœ¨é“¾æ¥åº“å
 			System.loadLibrary("yftpserver-jni");
 		} catch (UnsatisfiedLinkError e) {
 			System.err.println("Cannot load yftpserver library:\n "

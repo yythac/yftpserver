@@ -3,7 +3,7 @@
 //#include <stdlib.h>
 
 #define LOG_TAG "yftpserver"
-#include <../../common/c/JniLog.h>
+#include <common/c/JniLog.h>
 
 #include "yftp/ftpserver_native.h"
 #include "com_yythac_yftpserver_YFtpController.h"

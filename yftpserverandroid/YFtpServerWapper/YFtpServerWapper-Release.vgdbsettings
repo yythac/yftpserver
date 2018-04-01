@@ -14,8 +14,10 @@
     <IsDebugConfiguration>false</IsDebugConfiguration>
     <DoNotEditAndroidManifest>false</DoNotEditAndroidManifest>
     <JNIOnlyBuild>false</JNIOnlyBuild>
+    <AdditionalANTArguments />
     <AdditionalDirectoriesToDeleteOnClean>bin;obj</AdditionalDirectoriesToDeleteOnClean>
     <DeleteANTFilesOnClean>false</DeleteANTFilesOnClean>
+    <KeystorePath>E:\快盘\appkey.jks</KeystorePath>
     <CustomActions />
   </Build>
   <Debug xsi:type="com.visualgdb.debug.android">

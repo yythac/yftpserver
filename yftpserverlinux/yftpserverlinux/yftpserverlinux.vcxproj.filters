@@ -90,19 +90,10 @@
     <ClInclude Include="..\..\jni\yftp\ftp_server.h">
       <Filter>Header files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\jni\yftp\reply.hpp">
-      <Filter>Header files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\jni\yftp\user_node.h">
       <Filter>Header files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\jni\yftp\user_manager.h">
-      <Filter>Header files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\jni\yftp\server.hpp">
-      <Filter>Header files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\jni\yftp\request_parser.hpp">
       <Filter>Header files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\jni\yftp\conversion.h">
@@ -111,7 +102,13 @@
     <ClInclude Include="..\..\jni\yftp\stdafx.h">
       <Filter>Header files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\jni\yftp\connection.hpp">
+    <ClInclude Include="..\..\jni\yftp\connection.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\yftp\reply.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\yftp\server.h">
       <Filter>Header files</Filter>
     </ClInclude>
   </ItemGroup>

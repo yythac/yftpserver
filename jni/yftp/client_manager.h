@@ -27,29 +27,22 @@ namespace ftp {
 			client_manager();
 			~client_manager();
 
+			//查找客户端连接
 			sp_client_node find_client(boost::asio::ip::tcp::socket& ctrl_socket);
-			/* Add a new Client.
-			Returns:
-			-on success: a pointer to the new Client's ftp_server::ClientNode structure.
-			-on error: nullptr.
-			*/
+			//增加一个新的客户端连接
 			sp_client_node add_client( boost::asio::ip::tcp::socket& ctrl_sock);
-
 			void add_client(sp_client_node client)
 			{
 				std::lock_guard<std::mutex> lock(client_lock_);
 				ftp_client_list_.push_back(client);
 			}
-			/* Delete a Client.
-			Returns:
-			-on success: true.
-			-on error: false.
-			*/
+			//删除一个客户端连接
 			void delete_client(sp_client_node client);
 
-			/* Delete all Clients. */
+			//删除所有客户端连接
 			void delete_all_client(void);
 
+			//获取客户端连接总数
 			int get_client_num()
 			{
 				return ftp_client_list_.size();
@@ -62,7 +55,7 @@ namespace ftp {
 			}
 
 		private:
-			//ftp用户列表
+			//客户端连接列表
 			client_list	ftp_client_list_;
 
 			//错误处理

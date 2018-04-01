@@ -59,18 +59,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="connection.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="reply.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="request_parser.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="server.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="conversion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -99,6 +87,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="connection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="request_parser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="server.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="reply.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

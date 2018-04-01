@@ -136,14 +136,13 @@
     <ClInclude Include="..\..\jni\yftp\client_manager.h" />
     <ClInclude Include="..\..\jni\yftp\client_node.h" />
     <ClInclude Include="..\..\jni\yftp\common.h" />
-    <ClInclude Include="..\..\jni\yftp\connection.hpp" />
+    <ClInclude Include="..\..\jni\yftp\connection.h" />
     <ClInclude Include="..\..\jni\yftp\conversion.h" />
     <ClInclude Include="..\..\jni\yftp\error_code.h" />
     <ClInclude Include="..\..\jni\yftp\ftpserver_native.h" />
     <ClInclude Include="..\..\jni\yftp\ftp_server.h" />
-    <ClInclude Include="..\..\jni\yftp\reply.hpp" />
-    <ClInclude Include="..\..\jni\yftp\request_parser.hpp" />
-    <ClInclude Include="..\..\jni\yftp\server.hpp" />
+    <ClInclude Include="..\..\jni\yftp\reply.h" />
+    <ClInclude Include="..\..\jni\yftp\server.h" />
     <ClInclude Include="..\..\jni\yftp\stdafx.h" />
     <ClInclude Include="..\..\jni\yftp\user_manager.h" />
     <ClInclude Include="..\..\jni\yftp\user_node.h" />

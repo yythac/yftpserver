@@ -51,9 +51,9 @@ public class DirChooserDialog extends Dialog implements android.view.View.OnClic
 	
 	/**
 	 * @param context
-	 * @param type ÖµÎª1±íÊ¾´´½¨´ò¿ªÄ¿Â¼ÀàĞÍµÄ¶Ô»°¿ò£¬2Îª´´½¨±£´æÎÄ¼şµ½Ä¿Â¼ÀàĞÍµÄ¶Ô»°¿ò
-	 * @param fileType Òª¹ıÂËµÄÎÄ¼şÀàĞÍ,null±íÊ¾Ö»Ñ¡ÔñÄ¿Â¼
-	 * @param resultPath µãOK°´Å¥·µ»ØµÄ½á¹û£¬Ä¿Â¼»òÕßÄ¿Â¼+ÎÄ¼şÃû
+	 * @param type å€¼ä¸º1è¡¨ç¤ºåˆ›å»ºæ‰“å¼€ç›®å½•ç±»å‹çš„å¯¹è¯æ¡†ï¼Œ2ä¸ºåˆ›å»ºä¿å­˜æ–‡ä»¶åˆ°ç›®å½•ç±»å‹çš„å¯¹è¯æ¡†
+	 * @param fileType è¦è¿‡æ»¤çš„æ–‡ä»¶ç±»å‹,nullè¡¨ç¤ºåªé€‰æ‹©ç›®å½•
+	 * @param resultPath ç‚¹OKæŒ‰é’®è¿”å›çš„ç»“æœï¼Œç›®å½•æˆ–è€…ç›®å½•+æ–‡ä»¶å
 	 */
 	public DirChooserDialog(Context context,int type,String[]fileType,String resultPath) {
 		super(context);

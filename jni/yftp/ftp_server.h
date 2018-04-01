@@ -36,7 +36,7 @@
 using namespace boost::filesystem;
 
 
-#include "request_parser.hpp"
+#include "request_parser.h"
 #include "user_manager.h"
 
 #define LOG_TAG "yftpserver"
@@ -74,18 +74,12 @@ namespace ftp {
 			{
 				return last_error_.get_error_code();
 			}
+			//获取错误字符串
 			wstring get_last_error_string()
 			{
 				return last_error_.to_string();
 			}
-			/* Set the TCP Port Range ftp_server can use to Send and Receive Files or Data.
-			Arguments:
-			-the First Port of the Range.
-			-the Number of Ports, including the First previously given.
-			Returns:
-			-on success: true.
-			-on error: false.
-			*/
+			//设置pasv模式数据端口范围
 			bool set_data_port_range(unsigned short int data_port_start, unsigned int number)
 			{
 				if (data_port_start <= 1024 || number == 0)
@@ -97,15 +91,7 @@ namespace ftp {
 
 				return true;
 			}
-
-			/* Get the TCP Port Range ftp_server can use to Send and Receive Files or Data.
-			Arguments:
-			-a Pointer to the First Port.
-			-a Pointer to the Number of Ports, including the First.
-			Returns:
-			-on success: true.
-			-on error: false.
-			*/
+			//获取pasv模式数据端口范围
 			bool get_data_port_range(unsigned short int *data_port_start, int *number) 
 			{
 
@@ -132,34 +118,24 @@ namespace ftp {
 			bool add_user(const wstring& name, const wstring& password
 				, const wstring& home_dir, unsigned char priv);
 			bool delete_user(const wstring& name);
+			//设置用户权限
 			bool set_user_privilege(const std::wstring& name, unsigned char priv)
 			{
 				return user_manager_.set_user_privilege(name, priv);
 			}
+			//设置用户密码
 			bool set_user_password(const std::wstring& name, const std::wstring& password)
 			{
 				return user_manager_.set_user_password(name, password);
 			}
+			//设置用户目录
 			bool set_user_home_directory(const std::wstring& name, const std::wstring& home_dir)
 			{
 				return user_manager_.set_user_home_directory(name, home_dir);
 			}
-			/* Allow or disallow Anonymous users. Its privilegies will be set to
-			ftp_server::READFILE | ftp_server::LIST.
-			Arguments:
-			-true if you want ftp_server to accept anonymous clients, otherwise false.
-			-the Anonymous User Start Directory.
-			Returns:
-			-on success: true.
-			-on error: false.
-			*/
+			//初始化匿名用户
 			bool allow_anonymous(bool do_allow, const std::wstring& home_dir, unsigned char priv=FTP_USER_PRIV_READ);
-
-			/* Check if Anonymous Users are allowed.
-			Returns:
-			-true: if Anonymous Users are allowed.
-			-false: if Anonymous Users aren't allowed.
-			*/
+			//判断是否允许匿名登录
 			bool is_anonymous_allowed(void) 
 			{
 
@@ -167,9 +143,11 @@ namespace ftp {
 
 			}
 
-
+			//处理ftp命令
 			bool process_command(boost::asio::ip::tcp::socket& ctrl_socket, char *pdata, int datalen, reply& ftpreply);
+			//连接开始
 			bool start_work(reply& ftpreply);
+			//连接结束
 			bool end_work(boost::asio::ip::tcp::socket& ctrl_socket);
 			/***************************************
 			 * PRIVATE
@@ -177,7 +155,7 @@ namespace ftp {
 		private:
 
 			user_manager user_manager_;
-			//request_parser request_parser_;
+
 			//错误处理
 			error_manager last_error_;
 			/*****************************************

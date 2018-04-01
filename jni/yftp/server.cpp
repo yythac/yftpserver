@@ -6,7 +6,7 @@
 *Copyright (c) 2015 yyt_hac
 */
 #include "stdafx.h"
-#include "server.hpp"
+#include "server.h"
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>

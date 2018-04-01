@@ -1,6 +1,6 @@
 
 #include "stdafx.h"
-#include "server.hpp"
+#include "server.h"
 
 
 int g_listen_port = 0;

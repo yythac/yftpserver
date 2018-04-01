@@ -54,53 +54,33 @@ namespace ftp {
 			//false:没有找到用户或者其他情况
 			bool set_user_privilege(const std::wstring& name, unsigned char priv);
 
-			/* Set the maximum number of Clients which can be connected to the User at a time.
-			Arguments:
-			-user name.
-			-the number of clients who will be able to be connected to the user at a time.
-			Returns:
-			-on success: true.
-			-on error: false.
-			*/
+			//设置一个用户能同时登录的最大连接数
+			//参数:
+			//name:需要设置参数的用户名
+			//返回:
+			//true:设置成功
+			//fasle:设置失败
 			bool set_user_max_client(const std::wstring& name, int max_client);
 
-			/* Get the maximum number of Clients which can be connected to the User at a time.
-			Arguments:
-			-user name.
-			Returns:
-			-on success: the number of clients which can be connected to the User at a time.
-			-on error: -1.
-			*/
+			//获取一个用户能同时登录的最大连接数
+			//参数:
+			//name:需要获取参数的用户名
+			//返回:
+			//>= 0:用户能同时登录的最大连接数
+			//< 0:获取失败
 			int get_user_max_client(const std::wstring& name);
 
-			/* Get a User's privilegies
-			Arguments:
-			-user name
-			Returns:
-			-on success: the user's privilegies concatenated with the bitwise inclusive
-			binary operator "|".
-			-on error: 0.
-			*/
+			//获取用户权限
+			//参数:
+			//name:
+			//返回:
+			//>0: 该用户的权限
+			//0: 获取权限失败
 			unsigned char get_user_privilege(const std::wstring& name);
-
-			/* Get a pointer to a User's Password.
-			Arguments:
-			-user name
-			Returns:
-			-on success: true.
-			-on error: false.
-			*/
+			//获取用户登录密码
 			bool get_user_password(const std::wstring& name, std::wstring& password);
-
-			/* Get a pointer to a User's Start Directory.
-			Arguments:
-			-user name.
-			Returns:
-			-on success: a pointer to the User's Start Directory.
-			-on error: nullptr.
-			*/
+			//获取用户ftp目录
 			bool get_user_home_directory(const std::wstring& name, std::wstring& home_dir);
-
 
 			//设置用户密码
 			//参数：

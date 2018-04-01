@@ -23,7 +23,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#define SERVER_APP
+//#define SERVER_APP
 
 #ifdef SERVER_APP
 

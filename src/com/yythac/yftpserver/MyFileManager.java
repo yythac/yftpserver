@@ -1,4 +1,4 @@
-﻿package com.yythac.yftpserver;
+package com.yythac.yftpserver;
 
 import java.io.File;
 import java.util.ArrayList;

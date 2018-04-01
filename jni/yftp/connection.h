@@ -13,9 +13,9 @@
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
-#include "reply.hpp"
+#include "reply.h"
 
-#include "request_parser.hpp"
+#include "request_parser.h"
 #include "ftp_server.h"
 
 namespace ftp {
