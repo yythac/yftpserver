@@ -25,6 +25,7 @@
 
 //#include <sys/stat.h>
 #include <boost/asio.hpp>
+#include <boost/asio/ssl.hpp>
 #include <boost/format.hpp>
 #include <boost/algorithm/string.hpp>
 //#include <boost/atomic.hpp>
@@ -67,7 +68,126 @@ namespace ftp {
 			/* Destructor */
 			~ftp_server(void);
 
-			static data_port_range data_port_range_;
+			static void server_app(YCOMMON::YSERVER::ycommon_server_app *app)
+			{
+				server_app_ = app;
+			}
+			static YCOMMON::YSERVER::ycommon_server_app* server_app()
+			{
+				return server_app_;
+			}
+			static bool use_ssl()
+			{
+				return server_app_->is_use_ssl();
+			}
+	
+			static boost::asio::ssl::context& ssl_context()
+			{
+				if (server_app_->boost_ssl_context() == nullptr)
+					return context_;
+				else
+					return *(boost::asio::ssl::context*)server_app_->boost_ssl_context();
+			}
+
+			static bool set_certificate_chain_file(const std::string& chain_file)
+			{
+				boost::system::error_code ec;
+
+				context_.use_certificate_chain_file(chain_file, ec);
+				if (!ec)
+				{
+					return true;
+				}
+				else
+				{
+					YERROR_OUT("ftp_server::set_certificate_chain_file::use_certificate_chain_file:chain_file(%s),error(%s)", chain_file.c_str(), ec.message().c_str());
+				}
+
+				return false;
+			}
+			
+			static bool set_private_key_file(const std::string& key_file, YCOMMON::YSERVER::key_file_format format, boost::function<std::string&()> get_pass)
+			{
+
+				boost::system::error_code ec;
+
+				context_.set_password_callback(get_key_file_password,ec);
+				if (!ec)
+				{
+					context_.use_private_key_file(key_file, format == YCOMMON::YSERVER::key_file_format::pem_file ? boost::asio::ssl::context::pem : boost::asio::ssl::context::asn1, ec);
+					if (!ec)
+					{
+						return true;
+					}
+					else
+					{
+						YERROR_OUT("ftp_server::set_private_key_file::use_private_key_file:key_file(%s),error(%s)", key_file.c_str(), ec.message().c_str());
+					}
+				}
+				else
+				{
+					YERROR_OUT("ftp_server::set_private_key_file::set_password_callback:key_file(%s),error(%s)", key_file.c_str(), ec.message().c_str());
+				}
+
+
+				return false;
+			}
+			static bool set_tmp_dh_file(const std::string& dh_file)
+			{
+
+				boost::system::error_code ec;
+
+				context_.set_options(
+					boost::asio::ssl::context::default_workarounds
+					| boost::asio::ssl::context::no_sslv2
+					| boost::asio::ssl::context::single_dh_use);
+				if (!ec)
+				{
+
+					context_.use_tmp_dh_file(dh_file, ec);
+					if (!ec)
+					{
+						return true;
+					}
+					else
+					{
+						YERROR_OUT("ftp_server::set_tmp_dh_file::use_tmp_dh_file:dh_file(%s),error(%s)", dh_file.c_str(), ec.message().c_str());
+					}
+				}
+				else
+				{
+					YERROR_OUT("ftp_server::set_tmp_dh_file:set_options:dh_file(%s),error(%s)", dh_file.c_str(), ec.message().c_str());
+				}
+
+				return false;
+			}
+			//设置pasv模式数据端口范围
+			static bool set_data_port_range(unsigned short int data_port_start, unsigned int number)
+			{
+				if (data_port_start <= 1024 || number == 0)
+				{
+					return false;
+				}
+				data_port_range_.start = data_port_start;
+				data_port_range_.num = number;
+
+				return true;
+			}
+			//获取pasv模式数据端口范围
+			static bool get_data_port_range(unsigned short int *data_port_start, int *number)
+			{
+
+				if (data_port_start && number)
+				{
+
+					*data_port_start = data_port_range_.start;
+					*number = data_port_range_.num;
+					return true;
+
+				}
+				return false;
+
+			}
 
 			//获取错误码
 			int get_last_error()
@@ -79,33 +199,7 @@ namespace ftp {
 			{
 				return last_error_.to_string();
 			}
-			//设置pasv模式数据端口范围
-			bool set_data_port_range(unsigned short int data_port_start, unsigned int number)
-			{
-				if (data_port_start <= 1024 || number == 0)
-				{
-					return false;
-				}
-				this->data_port_range_.start = data_port_start;
-				this->data_port_range_.num = number;
 
-				return true;
-			}
-			//获取pasv模式数据端口范围
-			bool get_data_port_range(unsigned short int *data_port_start, int *number) 
-			{
-
-				if (data_port_start && number) 
-				{
-
-					*data_port_start = this->data_port_range_.start;
-					*number = this->data_port_range_.num;
-					return true;
-
-				}
-				return false;
-
-			}
 			//添加用户
 			//参数：
 			//name：需要添加的用户名
@@ -144,7 +238,7 @@ namespace ftp {
 			}
 
 			//处理ftp命令
-			bool process_command(boost::asio::ip::tcp::socket& ctrl_socket, char *pdata, int datalen, reply& ftpreply);
+			bool process_command(boost::asio::ip::tcp::socket& ctrl_socket, char *pdata, int datalen, reply& ftpreply, void* conn=nullptr);
 			//连接开始
 			bool start_work(reply& ftpreply);
 			//连接结束
@@ -153,6 +247,12 @@ namespace ftp {
 			 * PRIVATE
 			 ***************************************/
 		private:
+
+			static data_port_range data_port_range_;
+
+			static boost::asio::ssl::context context_;
+
+			static YCOMMON::YSERVER::ycommon_server_app *server_app_;
 
 			user_manager user_manager_;
 
@@ -163,6 +263,15 @@ namespace ftp {
 			 *****************************************/
 
 			bool is_allow_anonymous_;
+
+			//返回服务器私钥密码
+			static std::string& get_key_file_password(std::size_t max_length,  // The maximum size for a password.
+				boost::asio::ssl::context::password_purpose purpose) // Whether password is for reading or writing.) 
+			{
+				static std::string pass; //不能用临时变量，必须用静态，或类成员变量
+				pass = "test";
+				return pass;
+			}
 
 		};
 	}

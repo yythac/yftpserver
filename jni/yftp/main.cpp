@@ -12,6 +12,7 @@
 #include <string>
 #include <map>
 #include <boost/asio.hpp>
+#include <boost/asio/ssl.hpp>
 #include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 #include "server.h"
@@ -21,14 +22,28 @@
 
 #ifdef SERVER_APP
 
+#if defined(_WIN32) 
+#pragma comment(lib,"libeay32.lib")
+#pragma comment(lib, "ssleay32.lib")
+#endif
+
 class FtpServerApp : public YCOMMON::YSERVER::ycommon_server_app
 {
 
 protected:
 
+	virtual int init(const std::vector<std::string>& args) override
+	{
+		this->set_default_server_addr(21);
+		this->set_default_is_use_ssl(false);
+		this->set_default_is_use_raw_data(true);
+		return 0;
+	}
 	virtual int main(const std::vector<std::string>& args) override
 	{
 		YINFO_OUT("Begin to init Ftp Server.......");
+
+		ftp_server_.server_app(this);
 		
 		int ret = 0;
 
@@ -36,8 +51,8 @@ protected:
 		char* port_range = nullptr;
 		char* ftp_user = nullptr;
 
-		char *root_dir = this->get_string("ftp.server.root_dir", ""); 
-		char *allow_anonymous = this->get_string("ftp.server.allow_anonymous", "1::rwd");
+		char *root_dir = this->get_string("ftp.server.root_dir", "","ftp server");
+		char *allow_anonymous = this->get_string("ftp.server.allow_anonymous", "1::rwd", "ftp server");
 		YINFO_OUT("Ftp Server Root Dir:%s", root_dir);
 		YINFO_OUT("Anonymous User Info:%s", allow_anonymous);
 		if (allow_anonymous[0] != 0)
@@ -51,8 +66,8 @@ protected:
 				goto end;
 			}
 			string user_dir = root_dir;
-			if (user_dir.back() != '\\'
-				&& user_dir.back() != '/')
+			if (user_dir.empty() == false && (user_dir.back() != '\\'
+				&& user_dir.back() != '/'))
 			{
 				user_dir.push_back(path::preferred_separator);
 			}
@@ -75,7 +90,7 @@ protected:
 			}
 		}
 
-		ftp_user = this->get_string("ftp.server.user1", ""); // = "tester1:123456:IconLib:rwd";
+		ftp_user = this->get_string("ftp.server.user1", "", "ftp server"); // = "tester1:123456:IconLib:rwd";
 		if (ftp_user[0] != 0)
 		{
 			YINFO_OUT("Ftp Server User Infomation:%s", ftp_user);
@@ -100,7 +115,7 @@ protected:
 			}
 		
 			string user_dir = root_dir; 
-			if (user_dir.back() != '\\'
+			if (user_dir.empty() == false && user_dir.back() != '\\'
 				&& user_dir.back() != '/')
 			{
 				user_dir.push_back(path::preferred_separator);
@@ -121,7 +136,7 @@ protected:
 			ret = -1;
 			goto end;
 		}
-		port_range = this->get_string("ftp.server.pasv_port_range", "0-0");
+		port_range = this->get_string("ftp.server.pasv_port_range", "0-0", "ftp server");
 		if (port_range[0] != 0 && strcmp(port_range ,"0-0") != 0)
 		{
 			YINFO_OUT("Ftp Server pasv port range:%s", port_range);
@@ -142,9 +157,44 @@ protected:
 				}
 			}
 		}
-		this->set_default_server_addr(21);
-		this->set_default_is_use_ssl(false);
-		this->set_default_is_use_raw_data(true);
+
+
+/*		bool usessl = !(get_int("server.use_ssl", false, "common server") == 0);
+		ftp_server_.use_ssl(usessl);
+
+		if (usessl == true)
+		{
+			ftp_server_.ssl_context(boost_ssl_context());
+		}
+*/
+		char *certificate_chain_file, *private_key_file, *tmp_dh_file, *key_file_format;
+
+		certificate_chain_file = get_string("server.certificate_chain_file", "", "common server");
+		private_key_file = get_string("server.private_key_file", "", "common server");
+		tmp_dh_file = get_string("server.tmp_dh_file", "", "common server");
+		key_file_format = get_string("server.key_file_format", "pem", "common server");
+
+
+		YCOMMON::YSERVER::key_file_format key_format = (key_file_format == "asn1" ? YCOMMON::YSERVER::key_file_format::asn1_file : YCOMMON::YSERVER::key_file_format::pem_file);
+
+		if (ftp_server_.set_certificate_chain_file(certificate_chain_file) == false)
+		{
+			YFATAL_OUT("set_certificate_chain_file:%s failed!", certificate_chain_file);
+		}
+		if (ftp_server_.set_private_key_file(private_key_file, key_format, boost::bind(&FtpServerApp::get_key_file_password, this)) == false)
+		{
+			YFATAL_OUT("set_private_key_file:%s failed!", private_key_file);
+
+		}
+		if (ftp_server_.set_tmp_dh_file(tmp_dh_file) == false)
+		{
+			YFATAL_OUT("set_tmp_dh_file:%s failed!", tmp_dh_file);
+
+		}
+		YCOMMON::GLOBAL::ycommon_free(certificate_chain_file);
+		YCOMMON::GLOBAL::ycommon_free(private_key_file);
+		YCOMMON::GLOBAL::ycommon_free(tmp_dh_file);
+		YCOMMON::GLOBAL::ycommon_free(key_file_format);
 end:
 
 		YCOMMON::GLOBAL::ycommon_free(root_dir);
@@ -183,27 +233,33 @@ end:
 		ftp::server::reply ftpreply;
 		bool result;
 
-		result = ftp_server_.process_command((boost::asio::ip::tcp::socket&)*((boost::asio::ip::tcp::socket*)boost_handle(conn)),
-			(char*)pdata, len, ftpreply);
+		boost::asio::ip::tcp::socket& boost_socket = is_use_ssl() == false ? 
+			*((boost::asio::ip::tcp::socket*)boost_handle(conn)) 
+			: ((boost::asio::ssl::stream<boost::asio::ip::tcp::socket>*)boost_handle(conn))->next_layer();
+		result = ftp_server_.process_command(boost_socket,
+			(char*)pdata, len, ftpreply,conn);
 		if (ftpreply.empty() == false)
 		{
 			this->send_data(conn, ftpreply.to_string().data(), ftpreply.to_string().size());
 		}
 		if (result == false)
 		{
-			ftp_server_.end_work((boost::asio::ip::tcp::socket&)*((boost::asio::ip::tcp::socket*)boost_handle(conn)));
+			ftp_server_.end_work(boost_socket);
 			shutdown(conn);
 			disconnect(conn);
 		}
 		return true;
-		//		shutdown(conn);
-		//		disconnect(conn);
+
 	}
 	//连接关闭回调函数，重载该函数用于连接关闭后的清理工作
 	virtual void on_close(void* conn) override
 	{
 //		YINFO_OUT("Connection:%X disconnect", conn);
-		ftp_server_.end_work((boost::asio::ip::tcp::socket&)*((boost::asio::ip::tcp::socket*)boost_handle(conn)));
+		boost::asio::ip::tcp::socket& boost_socket = is_use_ssl() == false ?
+			*((boost::asio::ip::tcp::socket*)boost_handle(conn))
+			: ((boost::asio::ssl::stream<boost::asio::ip::tcp::socket>*)boost_handle(conn))->next_layer();
+
+		ftp_server_.end_work(boost_socket);
 
 	}
 private:

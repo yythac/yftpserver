@@ -215,9 +215,6 @@
     <ClCompile Include="..\..\jni\com_yythac_yftpserver_YFtpController.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\jni\YFtpServer.cpp">
-      <Filter>Source files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\jni\yftp\connection.cpp">
       <Filter>Source files\yftp</Filter>
     </ClCompile>
@@ -252,10 +249,13 @@
       <Filter>Source files\yftp</Filter>
     </ClCompile>
     <ClCompile Include="..\..\jni\yftp\user_manager.cpp">
-      <Filter>Source files</Filter>
+      <Filter>Source files\yftp</Filter>
     </ClCompile>
     <ClCompile Include="..\..\jni\yftp\user_node.cpp">
-      <Filter>Source files</Filter>
+      <Filter>Source files\yftp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\YFtpServer.cpp">
+      <Filter>Source files\yftp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -404,11 +404,11 @@
     <ClInclude Include="..\..\jni\yftp\ftp_server.h">
       <Filter>Source files\yftp</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\jni\yftp\user_manager.h">
-      <Filter>Source files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\jni\yftp\user_node.h">
-      <Filter>Source files</Filter>
+      <Filter>Source files\yftp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\yftp\user_manager.h">
+      <Filter>Source files\yftp</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

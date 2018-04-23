@@ -36,6 +36,8 @@ namespace ftp {
 			data_socket_ = nullptr;
 			ctrl_socket_ = nullptr;
 
+			ssl_socket_ = nullptr;
+
 			rename_from_path_.clear();
 			current_directory_ = L"/";
 			data_ip_ = 0;
@@ -53,6 +55,9 @@ namespace ftp {
 
 			current_transfer_.restart_at_ = 0;
 			current_transfer_.transfer_path_.clear();
+
+			data_use_ssl_ = false;
+			ctrl_use_ssl_ = ftp_server::use_ssl();
 		}
 
 
@@ -60,11 +65,12 @@ namespace ftp {
 		{
 
 		}
-		bool client_node::start(boost::asio::ip::tcp::socket& ctrl_socket)
+		bool client_node::start(boost::asio::ip::tcp::socket& ctrl_socket,void*& ctrl_conn)
 		{
 			is_ctrl_canal_open_ = true;
 
 			ctrl_socket_ = &ctrl_socket;
+			ctrl_conn_ = ctrl_conn;
 
 			server_ip_ = ctrl_socket.local_endpoint().address().to_v4().to_ulong();
 			client_ip_ = ctrl_socket.remote_endpoint().address().to_v4().to_ulong();
@@ -80,16 +86,49 @@ namespace ftp {
 
 			return true;
 		}
+		int client_node::read_data(char* pdata, int len)
+		{
+			boost::system::error_code ec;
+			int ret = 0;
+
+			if (data_use_ssl_ == true)
+				ret = ssl_socket_->read_some(boost::asio::buffer(pdata, len), ec);
+			else
+				ret = data_socket_->read_some(boost::asio::buffer(pdata, len), ec);
+			if (ec)
+			{
+				if (ec != boost::asio::error::eof)
+				{
+					YERROR_OUT("read_data::read_some error:%s", boost::system::system_error(ec).what());
+					ret = -1;
+				}
+			}
+			return ret;
+		}
+		bool client_node::send_data(const char* pdata, int len, bool is_ctrl)
+		{
+			boost::system::error_code ec;
+
+			if (is_ctrl == true)
+			{
+				return ftp_server::server_app()->send_data(ctrl_conn_, pdata, len);;
+			}
+			else
+			{
+				if(data_use_ssl_ == true)
+					boost::asio::write(*ssl_socket_, boost::asio::buffer(pdata, len), ec);
+				else
+					boost::asio::write(*data_socket_, boost::asio::buffer(pdata, len), ec);
+				return !ec;
+			}
+			
+		}
 		bool client_node::send_reply(const string& reply_string, bool is_ctrl)
 		{
 
 			if (reply_string.empty() == false)
 			{
-				boost::system::error_code ec;
-
-				boost::asio::write(is_ctrl == true ? *ctrl_socket_ : *data_socket_, boost::asio::buffer(reply_string.c_str(), reply_string.length()), ec);
-
-				return !ec;
+				return send_data(reply_string.data(), reply_string.length(), is_ctrl);
 			}
 
 			return true;
@@ -128,7 +167,8 @@ namespace ftp {
 		{
 			boost::system::error_code ec;
 
-			if (cur_data_mode_ == ftp_data_mode::mode_pasv)
+			if (cur_data_mode_ == ftp_data_mode::mode_pasv
+				|| cur_data_mode_ == ftp_data_mode::mode_port)
 			{
 				if (data_socket_ == nullptr)
 					data_socket_ = make_shared<boost::asio::ip::tcp::socket>(io_service_);
@@ -136,6 +176,12 @@ namespace ftp {
 				{
 					return false;
 				}
+
+			}
+
+			if (cur_data_mode_ == ftp_data_mode::mode_pasv)
+			{
+
 #ifdef WIN32
 				int timeout = 20000; //20s
 #else
@@ -145,19 +191,28 @@ namespace ftp {
 
 				data_acceptor_->accept(*data_socket_, ec);
 				close_socket(data_acceptor_);
+				if (!ec)
+				{
+					//is ftps?
+					if (data_use_ssl_ == true)
+					{
+						if (ssl_socket_ == nullptr)
+							ssl_socket_ = make_shared<boost::asio::ssl::stream<boost::asio::ip::tcp::socket&>>(*data_socket_, ftp_server::ssl_context());
+						if (ssl_socket_ == nullptr)
+						{
+							return false;
+						}
 
+						ssl_socket_->handshake(boost::asio::ssl::stream_base::server, ec);
+						
+					}
+				}
 				return !ec;
 
 			}
 			else if (cur_data_mode_ == ftp_data_mode::mode_port)
 			{
 
-				if (data_socket_ == nullptr)
-					data_socket_ = make_shared<boost::asio::ip::tcp::socket>(io_service_);
-				if (data_socket_ == nullptr)
-				{
-					return false;
-				}
 				if (open_socket(data_socket_) == false)
 				{
 					return false;
@@ -194,6 +249,23 @@ namespace ftp {
 				endpoint.port(data_port_);
 
 				data_socket_->connect(endpoint, ec);
+
+				if (!ec)
+				{
+					//is ftps?
+					if (data_use_ssl_ == true)
+					{
+						if (ssl_socket_ == nullptr)
+							ssl_socket_ = make_shared<boost::asio::ssl::stream<boost::asio::ip::tcp::socket&>>(*data_socket_, ftp_server::ssl_context());
+						if (ssl_socket_ == nullptr)
+						{
+							return false;
+						}
+
+						ssl_socket_->handshake(boost::asio::ssl::stream_base::server, ec);
+						
+					}
+				}
 
 				return !ec;
 
@@ -534,9 +606,10 @@ namespace ftp {
 			endpoint.address(boost::asio::ip::address(boost::asio::ip::address_v4(server_ip_)));
 
 #endif
-//			time_t now;
-//			srand((unsigned int)time(&now));
-			if (ftp_server::data_port_range_.num == 0)
+			unsigned short data_port_start = 0;
+			int data_port_num = 0;
+			ftp_server::get_data_port_range(&data_port_start, &data_port_num);
+			if (data_port_num == 0)
 			{
 				data_port_ = 0;
 				endpoint.port(data_port_);
@@ -553,7 +626,7 @@ namespace ftp {
 			{
 				std::lock_guard<std::mutex> lock(port_lock_);
 
-				static unsigned short cur_end_port = ftp_server::data_port_range_.start;
+				static unsigned short cur_end_port = data_port_start;
 				int checked_port_count = 0;
 				do
 				{
@@ -567,9 +640,9 @@ namespace ftp {
 					checked_port_count++;
 					data_port_ = (unsigned short)(cur_end_port++);
 					endpoint.port(data_port_);
-					if (cur_end_port > (ftp_server::data_port_range_.start + ftp_server::data_port_range_.num))
+					if (cur_end_port > (data_port_start + data_port_num))
 					{
-						cur_end_port = ftp_server::data_port_range_.start;
+						cur_end_port = data_port_start;
 					}
 
 				} while (data_acceptor_->bind(endpoint, ec)
@@ -1431,6 +1504,71 @@ namespace ftp {
 			}
 			return true;
 		}
+		bool client_node::process_prot_cmd(wstring cmd_arg, reply& ftpreply)
+		{
+			if (cmd_arg.empty())
+			{
+				ftpreply.create(501, L"Syntax error in arguments.");
+			}
+			else
+			{
+				if (cmd_arg == L"C")
+				{
+					if (data_use_ssl_ == false)
+					{
+						ftpreply.create(431, L"DATA CHANNEL PROTECTION LEVEL is already set to C");
+					}
+					else
+					{
+						data_use_ssl_ = false;
+
+						ftpreply.create(200, (boost::wformat(L"DATA CHANNEL PROTECTION LEVEL set to %s") % cmd_arg).str());
+					}
+				}
+				else if (cmd_arg == L"P")
+				{
+					if (data_use_ssl_ == true)
+					{
+						ftpreply.create(431, L"DATA CHANNEL PROTECTION LEVEL is already set to P");
+					}
+					else
+					{
+						data_use_ssl_ = true;
+
+						ftpreply.create(200, (boost::wformat(L"DATA CHANNEL PROTECTION LEVEL set to %s") % cmd_arg).str());
+					}
+				}
+				else
+				{
+					ftpreply.create(534, (boost::wformat(L"DATA CHANNEL PROTECTION LEVEL %s is not support") % cmd_arg).str());
+				}
+
+			}
+			return true;
+		}
+		bool client_node::process_auth_cmd(wstring cmd_arg, reply& ftpreply)
+		{
+			if (cmd_arg.empty())
+			{
+				ftpreply.create(501, L"Syntax error in arguments.");
+			}
+			else
+			{
+				if (ctrl_use_ssl_ == true)
+				{
+					ftpreply.create(534, L"Authentication type already set to SSL");
+				}
+				else if (cmd_arg == L"SSL" || cmd_arg == "TLS")
+				{
+
+				}
+				else
+				{
+					ftpreply.create(504, L"Auth type not supported");
+				}
+			}
+			return true;
+		}
 		void client_node::store_thread()
 		{
 
@@ -1469,22 +1607,18 @@ namespace ftp {
 					boost::system::error_code ec;
 					char *pBuffer = new char[CFTPSERVER_TRANSFER_BUFFER_SIZE];
 
-					while (data_socket_->is_open() == true && ofs.good() == true) 
+					while (ofs.good() == true) 
 					{
-						len = data_socket_->read_some(boost::asio::buffer(pBuffer, CFTPSERVER_TRANSFER_BUFFER_SIZE), ec);
-						if (ec)
+						len = read_data(pBuffer, CFTPSERVER_TRANSFER_BUFFER_SIZE);
+						if (len <= 0)
 						{
-							if (ec != boost::asio::error::eof)
-							{
-								YERROR_OUT("store_thread::read_some error:%s", boost::system::system_error(ec).what());
-								len = -1;
-							}
 							break; // Connection closed cleanly by peer.
 						}
 						ofs.write(pBuffer, len);
 						if(++i%1000 == 0)
 							boost::this_thread::yield();
 					}
+
 					delete[] pBuffer;
 
 				}
@@ -1528,7 +1662,7 @@ namespace ftp {
 		void client_node::retrieve_thread()
 		{
 
-			std::streamsize BlockSize = 0; std::streamsize len = -1;
+			std::streamsize BlockSize = 0; std::streamsize len = 0;
 
 			boost::filesystem::ifstream in(current_transfer_.transfer_path_, std::ios::in | std::ios::binary);
 
@@ -1542,17 +1676,27 @@ namespace ftp {
 				if (in.good())
 				{
 					int i = 0;
-					boost::system::error_code ec;
+					//boost::system::error_code ec;
 					char *pBuffer = new char[CFTPSERVER_TRANSFER_BUFFER_SIZE];
 
-					while (data_socket_->is_open() == true
-						&& in.good() == true)
+					while (in.good() == true)
 					{
 						in.read(pBuffer, CFTPSERVER_TRANSFER_BUFFER_SIZE);
 						BlockSize = in.gcount();
-						len = boost::asio::write(*data_socket_, boost::asio::buffer(pBuffer, (size_t)BlockSize), ec);
-						if (len <= 0)
+						if (BlockSize <= 0)
+						{
 							break;
+						}
+
+						if (send_data(pBuffer, (size_t)BlockSize, false) == false)
+						{
+							len = -1;
+							break;
+						}
+
+						//len = boost::asio::write(get_data_socket(), boost::asio::buffer(pBuffer, (size_t)BlockSize), ec);
+						//if (len <= 0)
+						//	break;
 						if (++i % 1000 == 0)
 							boost::this_thread::yield();
 

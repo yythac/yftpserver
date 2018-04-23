@@ -63,7 +63,7 @@ namespace ftp {
 			}
 		private:
 
-			int error_code_;
+			unsigned int error_code_;
 
 		};
 	}

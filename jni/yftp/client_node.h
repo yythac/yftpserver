@@ -14,14 +14,15 @@
 #include <mutex>
 
 #include <boost/asio.hpp>
+#include <boost/asio/ssl.hpp>
+#include <boost/thread/thread.hpp>
 
 #include "reply.h"
 #include "request_parser.h"
-//#include "user_node.h"
+
 
 #define CFTPSERVER_TRANSFER_BUFFER_SIZE (8 * 1024)
 #define CFTPSERVER_MAX_PARAM_LEN			2000
-
 
 namespace ftp {
 	namespace server {
@@ -63,7 +64,7 @@ namespace ftp {
 			client_node();
 			~client_node();
 			//连接开始
-			bool start(boost::asio::ip::tcp::socket& ctrl_socket);
+			bool start(boost::asio::ip::tcp::socket& ctrl_socket, void*& ctrl_connl);
 			//连接结束
 			bool end();
 
@@ -89,6 +90,8 @@ namespace ftp {
 			bool process_rnto_cmd(wstring cmd_arg, reply& ftpreply);
 			bool process_mkd_cmd(wstring cmd_arg, reply& ftpreply);
 			bool process_rmd_cmd(wstring cmd_arg, reply& ftpreply);
+			bool process_prot_cmd(wstring cmd_arg, reply& ftpreply);
+			bool process_auth_cmd(wstring cmd_arg, reply& ftpreply);
 
 			//获取字符编码
 			codetype get_code_type()
@@ -144,13 +147,20 @@ namespace ftp {
 
 			boost::asio::io_service io_service_;
 
+			shared_ptr<boost::asio::ssl::stream<boost::asio::ip::tcp::socket&> > ssl_socket_;
+
 			boost::asio::ip::tcp::socket* ctrl_socket_;
+
+			void* ctrl_conn_;
 
 			shared_ptr<boost::asio::ip::tcp::socket> data_socket_;
 
 			shared_ptr<boost::asio::ip::tcp::acceptor> data_acceptor_;
 
 			mutex port_lock_;
+
+			bool data_use_ssl_;
+			bool ctrl_use_ssl_;
 
 			//in host byte order
 			unsigned long server_ip_;
@@ -214,18 +224,42 @@ namespace ftp {
 			bool send_reply(const wstring& reply_string, bool is_ctrl = true);
 			bool send_reply(reply& ftpreply, bool is_ctrl = true);
 			bool send_reply(unsigned short status_code, const wstring& reply_string);
+			bool send_data(const char* pdata, int len, bool is_ctrl = true);
+			int read_data(char* pdata, int len);
 
 			bool shut_down_data_socket()
 			{
 				boost::system::error_code ec;
-				data_socket_->shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
+
+				if (data_use_ssl_ == true)
+				{
+					ssl_socket_->shutdown(ec);
+					//boost::this_thread::sleep(boost::get_system_time() + boost::posix_time::milliseconds(1000));
+					//ssl_socket_->next_layer().shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
+				}
+				else
+					data_socket_->shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
 				return !ec;
 
 			}
 			bool close_data_socket()
 			{
-				return close_socket(data_socket_);
+				if (data_use_ssl_ == true)
+				{
+					boost::system::error_code ec;
+					ssl_socket_->next_layer().close(ec);
+					return !ec;
+				}
+				else
+					return close_socket(data_socket_);
 
+			}
+			boost::asio::ip::tcp::socket& get_data_socket()
+			{
+				if (data_use_ssl_ == true)
+					return ssl_socket_->next_layer();
+				else
+					return  *data_socket_;
 			}
 
 			template <class T> bool open_socket(T& sock)

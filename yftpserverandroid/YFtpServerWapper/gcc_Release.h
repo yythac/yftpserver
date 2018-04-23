@@ -1056,19 +1056,19 @@
 #endif
 
 // --- Include directories begin --- //
-//D:/softwares/android-ndk-r10d/platforms/android-8/arch-arm/usr/include
+//D:/softwares/android-ndk-r10e/platforms/android-8/arch-arm/usr/include
 //D:\softwares\lib-for-Android-master\boost
-//D:/softwares/android-ndk-r10d/sources/android/support/include
-//D:/softwares/android-ndk-r10d/sources/cxx-stl/llvm-libc++/libcxx/include
-//D:/softwares/android-ndk-r10d/sources/cxx-stl/llvm-libc++/../llvm-libc++abi/libcxxabi/include
-//D:\softwares\android-ndk-r10d\toolchains\arm-linux-androideabi-4.8\prebuilt\windows-x86_64\bin\../lib/gcc/arm-linux-androideabi/4.8/include
-//D:\softwares\android-ndk-r10d\toolchains\arm-linux-androideabi-4.8\prebuilt\windows-x86_64\bin\../lib/gcc/arm-linux-androideabi/4.8/include-fixed
+//D:/softwares/android-ndk-r10e/sources/android/support/include
+//D:/softwares/android-ndk-r10e/sources/cxx-stl/llvm-libc++/libcxx/include
+//D:/softwares/android-ndk-r10e/sources/cxx-stl/llvm-libc++/../llvm-libc++abi/libcxxabi/include
+//D:\softwares\android-ndk-r10e\toolchains\arm-linux-androideabi-4.8\prebuilt\windows-x86_64\bin\../lib/gcc/arm-linux-androideabi/4.8/include
+//D:\softwares\android-ndk-r10e\toolchains\arm-linux-androideabi-4.8\prebuilt\windows-x86_64\bin\../lib/gcc/arm-linux-androideabi/4.8/include-fixed
 // --- Include directories end --- //
 
 
 // --- Library directories begin --- //
-//D:/softwares/android-ndk-r10d/toolchains/arm-linux-androideabi-4.8/prebuilt/windows-x86_64/bin/../lib/gcc/arm-linux-androideabi/4.8/
-//D:/softwares/android-ndk-r10d/toolchains/arm-linux-androideabi-4.8/prebuilt/windows-x86_64/bin/../lib/gcc/
-//D:/softwares/android-ndk-r10d/toolchains/arm-linux-androideabi-4.8/prebuilt/windows-x86_64/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/lib/
+//D:/softwares/android-ndk-r10e/toolchains/arm-linux-androideabi-4.8/prebuilt/windows-x86_64/bin/../lib/gcc/arm-linux-androideabi/4.8/
+//D:/softwares/android-ndk-r10e/toolchains/arm-linux-androideabi-4.8/prebuilt/windows-x86_64/bin/../lib/gcc/
+//D:/softwares/android-ndk-r10e/toolchains/arm-linux-androideabi-4.8/prebuilt/windows-x86_64/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/lib/
 // --- Library directories begin --- //
 

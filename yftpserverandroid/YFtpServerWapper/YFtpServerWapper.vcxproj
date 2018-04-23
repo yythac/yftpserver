@@ -76,13 +76,13 @@
     <NMakeBuildCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /build "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeBuildCommandLine>
     <NMakeCleanCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /clean "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeCleanCommandLine>
     <NMakeReBuildCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /rebuild "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeReBuildCommandLine>
-    <NMakeIncludeSearchPath>D:\softwares\android-ndk-r10d\platforms\android-8\arch-arm\usr\include;D:\softwares\lib-for-Android-master\boost;D:\softwares\android-ndk-r10d\sources\android\support\include;D:\softwares\android-ndk-r10d\sources\cxx-stl\llvm-libc++\libcxx\include;D:\softwares\android-ndk-r10d\sources\cxx-stl\llvm-libc++abi\libcxxabi\include;D:\softwares\android-ndk-r10d\toolchains\arm-linux-androideabi-4.8\prebuilt\windows-x86_64\lib\gcc\arm-linux-androideabi\4.8\include;D:\softwares\android-ndk-r10d\toolchains\arm-linux-androideabi-4.8\prebuilt\windows-x86_64\lib\gcc\arm-linux-androideabi\4.8\include-fixed;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+    <NMakeIncludeSearchPath>D:\softwares\android-ndk-r10e\platforms\android-8\arch-arm\usr\include;D:\softwares\lib-for-Android-master\boost;D:\softwares\android-ndk-r10e\sources\android\support\include;D:\softwares\android-ndk-r10e\sources\cxx-stl\llvm-libc++\libcxx\include;D:\softwares\android-ndk-r10e\sources\cxx-stl\llvm-libc++abi\libcxxabi\include;D:\softwares\android-ndk-r10e\toolchains\arm-linux-androideabi-4.8\prebuilt\windows-x86_64\lib\gcc\arm-linux-androideabi\4.8\include;D:\softwares\android-ndk-r10e\toolchains\arm-linux-androideabi-4.8\prebuilt\windows-x86_64\lib\gcc\arm-linux-androideabi\4.8\include-fixed;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
     <NMakeForcedIncludes>$(ProjectDir)\gcc_Release.h;$(VISUALGDB_DIR)\gcc_compat.h;$(NMakeForcedIncludes)</NMakeForcedIncludes>
-    <NMakePreprocessorDefinitions>__VisualGDB_CFG_Release;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
     <IncludePath />
     <ReferencePath />
     <LibraryPath />
     <NMakeOutput>$(ProjectDir)YFtpServerWapper-Release.vgdbsettings</NMakeOutput>
+    <NMakePreprocessorDefinitions>__VisualGDB_CFG_Release;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
   </PropertyGroup>
   <ItemDefinitionGroup>
   </ItemDefinitionGroup>
