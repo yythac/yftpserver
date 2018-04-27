@@ -65,7 +65,10 @@ namespace ftp {
 					content_ = (boost::format("%d %s\r\n") % code_ % content_).str();
 				}
 			}
-
+			void clear()
+			{
+				content_.clear();
+			}
 			bool empty()
 			{
 				return content_.empty();

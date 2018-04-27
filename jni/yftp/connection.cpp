@@ -6,11 +6,13 @@
 *Copyright (c) 2015 yyt_hac
 */
 
+
 #include "stdafx.h"
 #include "connection.h"
 #include <vector>
 #include <boost/bind.hpp>
 
+#ifndef SERVER_APP
 
 namespace ftp {
 	namespace server {
@@ -113,3 +115,4 @@ namespace ftp {
 
 	} // namespace server
 } // namespace ftp
+#endif

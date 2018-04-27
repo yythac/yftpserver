@@ -28,9 +28,9 @@ namespace ftp {
 			~client_manager();
 
 			//查找客户端连接
-			sp_client_node find_client(boost::asio::ip::tcp::socket& ctrl_socket);
+			sp_client_node find_client(YCOMMON::YSERVER::i_ycommon_socket& ctrl_socket);
 			//增加一个新的客户端连接
-			sp_client_node add_client( boost::asio::ip::tcp::socket& ctrl_sock);
+			sp_client_node add_client(YCOMMON::YSERVER::i_ycommon_socket& ctrl_sock);
 			void add_client(sp_client_node client)
 			{
 				std::lock_guard<std::mutex> lock(client_lock_);

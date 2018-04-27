@@ -1,7 +1,9 @@
 
+
 #include "stdafx.h"
 #include "server.h"
 
+#ifndef SERVER_APP
 
 int g_listen_port = 0;
 std::wstring g_start_dir(L"");
@@ -109,3 +111,4 @@ bool stop_ftp_server()
 
 	return bret;
 }
+#endif

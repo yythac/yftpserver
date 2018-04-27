@@ -129,7 +129,10 @@
     <ClCompile Include="client_manager.cpp" />
     <ClCompile Include="client_node.cpp" />
     <ClCompile Include="common.cpp" />
-    <ClCompile Include="connection.cpp" />
+    <ClCompile Include="connection.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="conversion.cpp" />
     <ClCompile Include="ftpserve_native.cpp" />
     <ClCompile Include="ftp_server.cpp" />

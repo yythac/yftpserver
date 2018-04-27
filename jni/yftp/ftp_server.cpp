@@ -29,9 +29,11 @@ namespace ftp {
 		 ***************************************/
 
 		data_port_range ftp_server::data_port_range_ = { 0 };
-
+#ifdef SERVER_APP
 		boost::asio::ssl::context ftp_server::context_(boost::asio::ssl::context::sslv23);
+
 		YCOMMON::YSERVER::ycommon_server_app *ftp_server::server_app_ = nullptr;
+#endif
 
 		ftp_server::ftp_server(void)
 		{
@@ -44,10 +46,11 @@ namespace ftp {
 			this->is_allow_anonymous_ = false;
 
 			srand((unsigned)time(nullptr));
-
+#ifdef SERVER_APP
 			context_.set_options(
 				boost::asio::ssl::context::default_workarounds
 				| boost::asio::ssl::context::no_sslv2);
+#endif
 
 		}
 
@@ -140,7 +143,8 @@ namespace ftp {
 			return true;
 
 		}
-		bool ftp_server::end_work(boost::asio::ip::tcp::socket& ctrl_socket)
+
+		bool ftp_server::end_work(YCOMMON::YSERVER::i_ycommon_socket& ctrl_socket)
 		{
 			sp_client_node client = user_manager_.find_client(ctrl_socket);
 			if (client != nullptr)
@@ -150,7 +154,7 @@ namespace ftp {
 			return true;
 		}
 
-		bool ftp_server::process_command(boost::asio::ip::tcp::socket& ctrl_socket, char *pdata, int datalen, reply& ftpreply,void* conn)
+		bool ftp_server::process_command(YCOMMON::YSERVER::i_ycommon_socket& ctrl_socket, char *pdata, int datalen, reply& ftpreply)
 		{
 			bool ret = true;
 
@@ -165,7 +169,7 @@ namespace ftp {
 				{
 					return false;
 				}
-				client->start(ctrl_socket,conn);
+				client->start(ctrl_socket);
 
 			}
 

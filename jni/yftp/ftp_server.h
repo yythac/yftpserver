@@ -25,7 +25,9 @@
 
 //#include <sys/stat.h>
 #include <boost/asio.hpp>
+#ifdef SERVER_APP
 #include <boost/asio/ssl.hpp>
+#endif
 #include <boost/format.hpp>
 #include <boost/algorithm/string.hpp>
 //#include <boost/atomic.hpp>
@@ -67,7 +69,7 @@ namespace ftp {
 			ftp_server(void);
 			/* Destructor */
 			~ftp_server(void);
-
+#ifdef SERVER_APP
 			static void server_app(YCOMMON::YSERVER::ycommon_server_app *app)
 			{
 				server_app_ = app;
@@ -75,10 +77,6 @@ namespace ftp {
 			static YCOMMON::YSERVER::ycommon_server_app* server_app()
 			{
 				return server_app_;
-			}
-			static bool use_ssl()
-			{
-				return server_app_->is_use_ssl();
 			}
 	
 			static boost::asio::ssl::context& ssl_context()
@@ -161,6 +159,7 @@ namespace ftp {
 
 				return false;
 			}
+#endif
 			//设置pasv模式数据端口范围
 			static bool set_data_port_range(unsigned short int data_port_start, unsigned int number)
 			{
@@ -236,23 +235,33 @@ namespace ftp {
 				return this->is_allow_anonymous_;
 
 			}
-
-			//处理ftp命令
-			bool process_command(boost::asio::ip::tcp::socket& ctrl_socket, char *pdata, int datalen, reply& ftpreply, void* conn=nullptr);
 			//连接开始
 			bool start_work(reply& ftpreply);
+
+			//处理ftp命令
+			bool process_command(YCOMMON::YSERVER::i_ycommon_socket& ctrl_socket, char *pdata, int datalen, reply& ftpreply);
 			//连接结束
-			bool end_work(boost::asio::ip::tcp::socket& ctrl_socket);
+			bool end_work(YCOMMON::YSERVER::i_ycommon_socket& ctrl_socket);
+
 			/***************************************
 			 * PRIVATE
 			 ***************************************/
 		private:
 
 			static data_port_range data_port_range_;
-
+#ifdef SERVER_APP
 			static boost::asio::ssl::context context_;
 
 			static YCOMMON::YSERVER::ycommon_server_app *server_app_;
+			//返回服务器私钥密码
+			static std::string& get_key_file_password(std::size_t max_length,  // The maximum size for a password.
+				boost::asio::ssl::context::password_purpose purpose) // Whether password is for reading or writing.) 
+			{
+				static std::string pass; //不能用临时变量，必须用静态，或类成员变量
+				pass = "test";
+				return pass;
+			}
+#endif
 
 			user_manager user_manager_;
 
@@ -264,14 +273,7 @@ namespace ftp {
 
 			bool is_allow_anonymous_;
 
-			//返回服务器私钥密码
-			static std::string& get_key_file_password(std::size_t max_length,  // The maximum size for a password.
-				boost::asio::ssl::context::password_purpose purpose) // Whether password is for reading or writing.) 
-			{
-				static std::string pass; //不能用临时变量，必须用静态，或类成员变量
-				pass = "test";
-				return pass;
-			}
+
 
 		};
 	}

@@ -17,12 +17,13 @@
 
 // Here is the switch to enable large file support under Win. ( gcc and MS.VC++ )
 
-//#define __USE_FILE_OFFSET64
+#define __USE_FILE_OFFSET64
 
 #ifdef WIN32
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
+//Uncomment the next line if you don't want to use ycommonserverlib
 #define SERVER_APP
 
 #ifdef SERVER_APP
@@ -34,6 +35,10 @@
 #define YERROR_OUT(...)		;
 #define YWARNING_OUT(...)	;
 #define YINFO_OUT(...)		;
-#define YDEBUG_OUT(...)	
+#define YDEBUG_OUT(...)		;
+
+#define YCOMMON boost
+#define YSERVER asio
+#define i_ycommon_socket  ip::tcp::socket
 
 #endif

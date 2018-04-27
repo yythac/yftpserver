@@ -14,7 +14,9 @@
 #include <mutex>
 
 #include <boost/asio.hpp>
+#ifdef SERVER_APP
 #include <boost/asio/ssl.hpp>
+#endif
 #include <boost/thread/thread.hpp>
 
 #include "reply.h"
@@ -23,6 +25,8 @@
 
 #define CFTPSERVER_TRANSFER_BUFFER_SIZE (8 * 1024)
 #define CFTPSERVER_MAX_PARAM_LEN			2000
+
+//using YCOMMON::YSERVER;
 
 namespace ftp {
 	namespace server {
@@ -64,7 +68,9 @@ namespace ftp {
 			client_node();
 			~client_node();
 			//连接开始
-			bool start(boost::asio::ip::tcp::socket& ctrl_socket, void*& ctrl_connl);
+
+			bool start(YCOMMON::YSERVER::i_ycommon_socket& ctrl_socket);
+
 			//连接结束
 			bool end();
 
@@ -108,13 +114,12 @@ namespace ftp {
 			{
 				return is_logged_;
 			}
-			//获取当前连接socket
-			boost::asio::ip::tcp::socket* get_ctrl_socket()
+			YCOMMON::YSERVER::i_ycommon_socket* get_ctrl_socket()
 			{
 				return ctrl_socket_;
 			}
 			//设置当前连接socket
-			void set_ctrl_socket(boost::asio::ip::tcp::socket* ctrl_socket)
+			void set_ctrl_socket(YCOMMON::YSERVER::i_ycommon_socket* ctrl_socket)
 			{
 				ctrl_socket_ = ctrl_socket;
 			}
@@ -146,12 +151,14 @@ namespace ftp {
 			request_parser request_parser_;
 
 			boost::asio::io_service io_service_;
+#ifdef SERVER_APP
 
 			shared_ptr<boost::asio::ssl::stream<boost::asio::ip::tcp::socket&> > ssl_socket_;
+#endif
 
-			boost::asio::ip::tcp::socket* ctrl_socket_;
+			YCOMMON::YSERVER::i_ycommon_socket* ctrl_socket_;
 
-			void* ctrl_conn_;
+			//void* ctrl_conn_;
 
 			shared_ptr<boost::asio::ip::tcp::socket> data_socket_;
 
@@ -160,7 +167,6 @@ namespace ftp {
 			mutex port_lock_;
 
 			bool data_use_ssl_;
-			bool ctrl_use_ssl_;
 
 			//in host byte order
 			unsigned long server_ip_;
@@ -230,7 +236,7 @@ namespace ftp {
 			bool shut_down_data_socket()
 			{
 				boost::system::error_code ec;
-
+#ifdef SERVER_APP
 				if (data_use_ssl_ == true)
 				{
 					ssl_socket_->shutdown(ec);
@@ -238,12 +244,14 @@ namespace ftp {
 					//ssl_socket_->next_layer().shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
 				}
 				else
+#endif
 					data_socket_->shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
 				return !ec;
 
 			}
 			bool close_data_socket()
 			{
+#ifdef SERVER_APP
 				if (data_use_ssl_ == true)
 				{
 					boost::system::error_code ec;
@@ -251,14 +259,17 @@ namespace ftp {
 					return !ec;
 				}
 				else
+#endif
 					return close_socket(data_socket_);
 
 			}
 			boost::asio::ip::tcp::socket& get_data_socket()
 			{
+#ifdef SERVER_APP
 				if (data_use_ssl_ == true)
 					return ssl_socket_->next_layer();
 				else
+#endif
 					return  *data_socket_;
 			}
 

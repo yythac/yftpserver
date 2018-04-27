@@ -23,7 +23,7 @@ error:
 	$(error Invalid configuration, please check your inputs)
 endif
 
-SOURCEFILES := client_manager.cpp client_node.cpp common.cpp connection.cpp conversion.cpp ftpserve_native.cpp ftp_server.cpp main.cpp prebuild.cpp reply.cpp request_parser.cpp server.cpp user_manager.cpp user_node.cpp
+SOURCEFILES := ../../../ycommonserverlib/yftpserver/jni/yftp/client_manager.cpp ../../../ycommonserverlib/yftpserver/jni/yftp/client_node.cpp ../../../ycommonserverlib/yftpserver/jni/yftp/common.cpp ../../../ycommonserverlib/yftpserver/jni/yftp/connection.cpp ../../../ycommonserverlib/yftpserver/jni/yftp/conversion.cpp ../../../ycommonserverlib/yftpserver/jni/yftp/ftpserve_native.cpp ../../../ycommonserverlib/yftpserver/jni/yftp/ftp_server.cpp ../../../ycommonserverlib/yftpserver/jni/yftp/main.cpp ../../../ycommonserverlib/yftpserver/jni/yftp/prebuild.cpp ../../../ycommonserverlib/yftpserver/jni/yftp/reply.cpp ../../../ycommonserverlib/yftpserver/jni/yftp/request_parser.cpp ../../../ycommonserverlib/yftpserver/jni/yftp/server.cpp ../../../ycommonserverlib/yftpserver/jni/yftp/user_manager.cpp ../../../ycommonserverlib/yftpserver/jni/yftp/user_node.cpp
 EXTERNAL_LIBS := 
 EXTERNAL_LIBS_COPIED := $(foreach lib, $(EXTERNAL_LIBS),$(BINARYDIR)/$(notdir $(lib)))
 
@@ -163,3 +163,60 @@ $(BINARYDIR)/%.o : %.cxx $(all_make_files) |$(BINARYDIR)
 	$(CC) $(CFLAGS) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 
 #VisualGDB: GeneratedRules				#<--- All lines below are auto-generated
+
+
+$(BINARYDIR)/client_manager.o : ../../../ycommonserverlib/yftpserver/jni/yftp/client_manager.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+
+$(BINARYDIR)/client_node.o : ../../../ycommonserverlib/yftpserver/jni/yftp/client_node.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+
+$(BINARYDIR)/common.o : ../../../ycommonserverlib/yftpserver/jni/yftp/common.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+
+$(BINARYDIR)/connection.o : ../../../ycommonserverlib/yftpserver/jni/yftp/connection.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+
+$(BINARYDIR)/conversion.o : ../../../ycommonserverlib/yftpserver/jni/yftp/conversion.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+
+$(BINARYDIR)/ftpserve_native.o : ../../../ycommonserverlib/yftpserver/jni/yftp/ftpserve_native.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+
+$(BINARYDIR)/ftp_server.o : ../../../ycommonserverlib/yftpserver/jni/yftp/ftp_server.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+
+$(BINARYDIR)/main.o : ../../../ycommonserverlib/yftpserver/jni/yftp/main.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+
+$(BINARYDIR)/prebuild.o : ../../../ycommonserverlib/yftpserver/jni/yftp/prebuild.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+
+$(BINARYDIR)/reply.o : ../../../ycommonserverlib/yftpserver/jni/yftp/reply.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+
+$(BINARYDIR)/request_parser.o : ../../../ycommonserverlib/yftpserver/jni/yftp/request_parser.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+
+$(BINARYDIR)/server.o : ../../../ycommonserverlib/yftpserver/jni/yftp/server.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+
+$(BINARYDIR)/user_manager.o : ../../../ycommonserverlib/yftpserver/jni/yftp/user_manager.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+
+$(BINARYDIR)/user_node.o : ../../../ycommonserverlib/yftpserver/jni/yftp/user_node.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+

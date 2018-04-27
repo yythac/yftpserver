@@ -12,7 +12,7 @@
 #include <string>
 #include <map>
 #include <boost/asio.hpp>
-#include <boost/asio/ssl.hpp>
+
 #include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 #include "server.h"
@@ -21,7 +21,7 @@
 
 
 #ifdef SERVER_APP
-
+#include <boost/asio/ssl.hpp>
 #if defined(_WIN32) 
 #pragma comment(lib,"libeay32.lib")
 #pragma comment(lib, "ssleay32.lib")
@@ -158,15 +158,6 @@ protected:
 			}
 		}
 
-
-/*		bool usessl = !(get_int("server.use_ssl", false, "common server") == 0);
-		ftp_server_.use_ssl(usessl);
-
-		if (usessl == true)
-		{
-			ftp_server_.ssl_context(boost_ssl_context());
-		}
-*/
 		char *certificate_chain_file, *private_key_file, *tmp_dh_file, *key_file_format;
 
 		certificate_chain_file = get_string("server.certificate_chain_file", "", "common server");
@@ -179,16 +170,16 @@ protected:
 
 		if (ftp_server_.set_certificate_chain_file(certificate_chain_file) == false)
 		{
-			YFATAL_OUT("set_certificate_chain_file:%s failed!", certificate_chain_file);
+			YERROR_OUT("set_certificate_chain_file:%s failed!", certificate_chain_file);
 		}
 		if (ftp_server_.set_private_key_file(private_key_file, key_format, boost::bind(&FtpServerApp::get_key_file_password, this)) == false)
 		{
-			YFATAL_OUT("set_private_key_file:%s failed!", private_key_file);
+			YERROR_OUT("set_private_key_file:%s failed!", private_key_file);
 
 		}
 		if (ftp_server_.set_tmp_dh_file(tmp_dh_file) == false)
 		{
-			YFATAL_OUT("set_tmp_dh_file:%s failed!", tmp_dh_file);
+			YERROR_OUT("set_tmp_dh_file:%s failed!", tmp_dh_file);
 
 		}
 		YCOMMON::GLOBAL::ycommon_free(certificate_chain_file);
@@ -211,7 +202,7 @@ end:
 		pass = "test";
 		return pass;
 	}
-	virtual void on_connect(void* conn) override
+	virtual void on_connect(YCOMMON::YSERVER::i_ycommon_socket* conn) override
 	{
 //		YINFO_OUT( L"Connection:%X connected", conn);
 		ftp::server::reply ftpreply;
@@ -219,47 +210,41 @@ end:
 		ftp_server_.start_work(ftpreply);
 		if (ftpreply.empty() == false)
 		{
-			this->send_data(conn, ftpreply.to_string().data(), ftpreply.to_string().size());
+			conn->i_send_data(ftpreply.to_string().data(), ftpreply.to_string().size());
 		}
 		return ;
 	}
 	//数据处理回调函数,重载该函数用于处理数据包
 	//客户端发送的包为（2字节长度+数据内容）
 	//这里收到的数据为 数据内容，已经自动根据数据包长度收到完整的数据，2字节长度已去除
-	virtual bool on_process_data(void* conn, const char* pdata, int len) override
+	virtual bool on_process_data(YCOMMON::YSERVER::i_ycommon_socket* conn, const char* pdata, int len) override
 	{
-		//		YINFO_OUT("Connection:%X recv data,len:%d", conn,len);
+		//YINFO_OUT("Connection:%X recv data,len:%d", conn,len);
 
 		ftp::server::reply ftpreply;
 		bool result;
 
-		boost::asio::ip::tcp::socket& boost_socket = is_use_ssl() == false ? 
-			*((boost::asio::ip::tcp::socket*)boost_handle(conn)) 
-			: ((boost::asio::ssl::stream<boost::asio::ip::tcp::socket>*)boost_handle(conn))->next_layer();
-		result = ftp_server_.process_command(boost_socket,
-			(char*)pdata, len, ftpreply,conn);
+		result = ftp_server_.process_command(*conn,
+			(char*)pdata, len, ftpreply);
 		if (ftpreply.empty() == false)
 		{
-			this->send_data(conn, ftpreply.to_string().data(), ftpreply.to_string().size());
+			conn->i_send_data(ftpreply.to_string().data(), ftpreply.to_string().size());
 		}
 		if (result == false)
 		{
-			ftp_server_.end_work(boost_socket);
-			shutdown(conn);
-			disconnect(conn);
+			ftp_server_.end_work(*conn);
+			conn->i_shutdown();
+			conn->i_disconnect();
 		}
 		return true;
 
 	}
 	//连接关闭回调函数，重载该函数用于连接关闭后的清理工作
-	virtual void on_close(void* conn) override
+	virtual void on_close(YCOMMON::YSERVER::i_ycommon_socket* conn) override
 	{
 //		YINFO_OUT("Connection:%X disconnect", conn);
-		boost::asio::ip::tcp::socket& boost_socket = is_use_ssl() == false ?
-			*((boost::asio::ip::tcp::socket*)boost_handle(conn))
-			: ((boost::asio::ssl::stream<boost::asio::ip::tcp::socket>*)boost_handle(conn))->next_layer();
 
-		ftp_server_.end_work(boost_socket);
+		ftp_server_.end_work(*conn);
 
 	}
 private:

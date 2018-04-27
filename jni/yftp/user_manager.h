@@ -99,7 +99,7 @@ namespace ftp {
 
 			bool proccess_home_directory(std::wstring& home_dir);
 
-			sp_client_node find_client(boost::asio::ip::tcp::socket& ctrl_socket);
+			sp_client_node find_client(YCOMMON::YSERVER::i_ycommon_socket& ctrl_socket);
 
 			//查找用户
 			//参数：

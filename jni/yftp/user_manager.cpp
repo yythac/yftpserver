@@ -164,7 +164,7 @@ namespace ftp {
 				return false;
 			}
 		}
-		sp_client_node user_manager::find_client(boost::asio::ip::tcp::socket& ctrl_socket)
+		sp_client_node user_manager::find_client(YCOMMON::YSERVER::i_ycommon_socket& ctrl_socket)
 		{
 			std::lock_guard<std::mutex> lock(user_lock_);
 
