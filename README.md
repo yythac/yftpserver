@@ -12,7 +12,7 @@
     jni/yftp----------------------------------------------yftpserver core c++ source files
     src/com/yythac/yftpserver-----------------------------yftpserver java source files for android
 
-	ver 1.1:
+	ver 1.2:
 	1. use ycommonserverlib
 	2. support xml,properties,ini format config file
 	3. support Explicit or Implicit ftps
