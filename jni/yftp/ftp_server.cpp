@@ -30,9 +30,7 @@ namespace ftp {
 
 		data_port_range ftp_server::data_port_range_ = { 0 };
 #ifdef SERVER_APP
-		boost::asio::ssl::context ftp_server::context_(boost::asio::ssl::context::sslv23);
-
-		YCOMMON::YSERVER::ycommon_server_app *ftp_server::server_app_ = nullptr;
+		boost::asio::ssl::context* ftp_server::context_ = nullptr;
 #endif
 
 		ftp_server::ftp_server(void)
@@ -46,11 +44,6 @@ namespace ftp {
 			this->is_allow_anonymous_ = false;
 
 			srand((unsigned)time(nullptr));
-#ifdef SERVER_APP
-			context_.set_options(
-				boost::asio::ssl::context::default_workarounds
-				| boost::asio::ssl::context::no_sslv2);
-#endif
 
 		}
 
@@ -139,7 +132,7 @@ namespace ftp {
 
 		bool ftp_server::start_work(reply& ftpreply)
 		{
-			ftpreply.create(220, L"Welcome to yyt_hac's ftp server.");
+			ftpreply.create(220, L"Welcome to yyt_hac's ftp server,current version is " CUR_FTP_VERSION);
 			return true;
 
 		}
@@ -172,7 +165,9 @@ namespace ftp {
 				client->start(ctrl_socket);
 
 			}
-
+			//pdata[datalen] = 0;
+			//YDEBUG_OUT("ftp server recv:%s", pdata);
+			
 			ftpreply.create(0, L"");
 			ftpreply.set_code_type(client->get_code_type());
 
@@ -184,8 +179,8 @@ namespace ftp {
 			{
 				return true;
 			}
-
-			//YDEBUG_OUT("ftp server recv:%s", pdata);
+			//pdata[datalen] = 0;
+			//YDEBUG_OUT("ftp server recv:%s,cmd.id:%d", pdata, cmd.id);
 
 			switch (cmd.id)
 			{

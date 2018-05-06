@@ -8,6 +8,7 @@
 
 #include "stdafx.h"
 
+#include <stdlib.h>
 #include <iostream>
 #include <string>
 #include <map>
@@ -34,18 +35,25 @@ protected:
 
 	virtual int init(const std::vector<std::string>& args) override
 	{
+
 		this->set_default_server_addr(21);
 		this->set_default_is_use_ssl(false);
 		this->set_default_is_use_raw_data(true);
+		//不缓存日志，直接写入文件
+//		YLOG_SET_ALWAYS_FLUSH(true); 
+
 		return 0;
 	}
 	virtual int main(const std::vector<std::string>& args) override
 	{
 		YINFO_OUT("Begin to init Ftp Server.......");
-
-		ftp_server_.server_app(this);
 		
 		int ret = 0;
+
+		string tmp_usr_base = "ftp.server.user";
+		char tmp_str[10] = { 0 };
+		int user_index = 0;
+		bool have_user = false;
 
 		vector<string> vStr;
 		char* port_range = nullptr;
@@ -90,47 +98,59 @@ protected:
 			}
 		}
 
-		ftp_user = this->get_string("ftp.server.user1", "", "ftp server"); // = "tester1:123456:IconLib:rwd";
-		if (ftp_user[0] != 0)
+		do 
 		{
-			YINFO_OUT("Ftp Server User Infomation:%s", ftp_user);
+			snprintf(tmp_str, sizeof(tmp_str), "%d", ++user_index);
+			string tmp_usr_info = tmp_usr_base + tmp_str;
+			ftp_user = this->get_string(tmp_usr_info, "", "ftp server"); // = "tester1:123456:IconLib:rwd";
+			if (ftp_user[0] != 0)
+			{
+				YINFO_OUT("Ftp Server User Infomation:%s", ftp_user);
 
-			vStr.clear();
-			boost::split(vStr, ftp_user, boost::is_any_of(":;,"), boost::token_compress_off);
-			if (vStr.size() != 4)
-			{
-				YFATAL_OUT("Ftp Server User Info Invalid!!!");
-				ret = -1;
-				goto end;
-			}
-			unsigned char priv = 0;
-			for (auto c : vStr[3])
-			{
-				if (c == 'r')
-					priv = priv | (unsigned char)FTP_USER_PRIV_READ;
-				else if(c == 'w')
-					priv = priv | (unsigned char)FTP_USER_PRIV_WRITE;
-				else if(c == 'd')
-					priv = priv | (unsigned char)FTP_USER_PRIV_DEL;
-			}
-		
-			string user_dir = root_dir; 
-			if (user_dir.empty() == false && user_dir.back() != '\\'
-				&& user_dir.back() != '/')
-			{
-				user_dir.push_back(path::preferred_separator);
-			}
-			user_dir += vStr[2];
-			if (ftp_server_.add_user(s2ws(vStr[0]).c_str(), s2ws(vStr[1]).c_str(), s2ws(user_dir).c_str(), priv) == false)
-			{
-				YFATAL_OUT("Ftp Server Add User Error:%s!!!", ws2s(ftp_server_.get_last_error_string()).c_str());
-				ret = -1;
-				goto end;
-			}
+				vStr.clear();
+				boost::split(vStr, ftp_user, boost::is_any_of(":;,"), boost::token_compress_off);
+				if (vStr.size() != 4)
+				{
+					YERROR_OUT("Ftp Server User Info Invalid!!!");
+					continue;
+				}
+				unsigned char priv = 0;
+				for (auto c : vStr[3])
+				{
+					if (c == 'r')
+						priv = priv | (unsigned char)FTP_USER_PRIV_READ;
+					else if (c == 'w')
+						priv = priv | (unsigned char)FTP_USER_PRIV_WRITE;
+					else if (c == 'd')
+						priv = priv | (unsigned char)FTP_USER_PRIV_DEL;
+				}
 
-		}
+				string user_dir = root_dir;
+				if (user_dir.empty() == false && user_dir.back() != '\\'
+					&& user_dir.back() != '/')
+				{
+					user_dir.push_back(path::preferred_separator);
+				}
+				user_dir += vStr[2];
+				if (ftp_server_.add_user(s2ws(vStr[0]).c_str(), s2ws(vStr[1]).c_str(), s2ws(user_dir).c_str(), priv) == false)
+				{
+					YERROR_OUT("Ftp Server Add User Error:%s!!!", ws2s(ftp_server_.get_last_error_string()).c_str());
+				}
+				YCOMMON::GLOBAL::ycommon_free(ftp_user);
 
-		if (allow_anonymous[0] == 0 && ftp_user[0] == 0)
+				have_user = true;
+			}
+			else
+			{
+				YCOMMON::GLOBAL::ycommon_free(ftp_user);
+				break;
+			}
+			
+		} while (true);
+
+
+
+		if (allow_anonymous[0] == 0 && have_user == false)
 		{
 			YFATAL_OUT("Ftp Server No User Infomation!!!");
 			ret = -1;
@@ -157,51 +177,27 @@ protected:
 				}
 			}
 		}
-
-		char *certificate_chain_file, *private_key_file, *tmp_dh_file, *key_file_format;
-
-		certificate_chain_file = get_string("server.certificate_chain_file", "", "common server");
-		private_key_file = get_string("server.private_key_file", "", "common server");
-		tmp_dh_file = get_string("server.tmp_dh_file", "", "common server");
-		key_file_format = get_string("server.key_file_format", "pem", "common server");
-
-
-		YCOMMON::YSERVER::key_file_format key_format = (key_file_format == "asn1" ? YCOMMON::YSERVER::key_file_format::asn1_file : YCOMMON::YSERVER::key_file_format::pem_file);
-
-		if (ftp_server_.set_certificate_chain_file(certificate_chain_file) == false)
-		{
-			YERROR_OUT("set_certificate_chain_file:%s failed!", certificate_chain_file);
-		}
-		if (ftp_server_.set_private_key_file(private_key_file, key_format, boost::bind(&FtpServerApp::get_key_file_password, this)) == false)
-		{
-			YERROR_OUT("set_private_key_file:%s failed!", private_key_file);
-
-		}
-		if (ftp_server_.set_tmp_dh_file(tmp_dh_file) == false)
-		{
-			YERROR_OUT("set_tmp_dh_file:%s failed!", tmp_dh_file);
-
-		}
-		YCOMMON::GLOBAL::ycommon_free(certificate_chain_file);
-		YCOMMON::GLOBAL::ycommon_free(private_key_file);
-		YCOMMON::GLOBAL::ycommon_free(tmp_dh_file);
-		YCOMMON::GLOBAL::ycommon_free(key_file_format);
+		ftp_server_.ssl_context(this->boost_ssl_context());
 end:
 
 		YCOMMON::GLOBAL::ycommon_free(root_dir);
-		YCOMMON::GLOBAL::ycommon_free(ftp_user);
 		YCOMMON::GLOBAL::ycommon_free(port_range);
 		YCOMMON::GLOBAL::ycommon_free(allow_anonymous);
 
 		return ret;
 	}
-	//返回服务器私钥密码
+	/*
+	//返回服务器私钥密码,默认是从配置文件中获取，所以如果不想改变默认方式就不用重载该函数
 	virtual std::string& get_key_file_password() const override
 	{
-		static std::string pass; //不能用临时变量，必须用静态，或类成员变量
-		pass = "test";
+
+		static std::string pass("");
+		char* key_pass = get_string("server.key_file_password", "", "common server");
+		pass = key_pass;
+		YCOMMON::GLOBAL::ycommon_free(key_pass);
 		return pass;
-	}
+		
+	}*/
 	virtual void on_connect(YCOMMON::YSERVER::i_ycommon_socket* conn) override
 	{
 //		YINFO_OUT( L"Connection:%X connected", conn);

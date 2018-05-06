@@ -19,6 +19,8 @@
 
 #define __USE_FILE_OFFSET64
 
+#define CUR_FTP_VERSION L"1.2"
+
 #ifdef WIN32
 #define _CRT_SECURE_NO_WARNINGS
 #endif

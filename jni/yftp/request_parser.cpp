@@ -7,6 +7,7 @@
 */
 #include "stdafx.h"
 #include <time.h>
+#include <iostream>
 #include "request_parser.h"
 #include "conversion.h"
 
@@ -81,7 +82,8 @@ std::map<std::wstring, t_command> const command_map = {
 t_command request_parser::MapCommand(std::wstring const& command, std::wstring  const& args, reply& result)
 {
 	t_command ret = { commands::invalid,L"", false, false };
-
+//	std::wcout << "command:" << command;
+	
 	auto const& it = command_map.find(command);
 	if (it != command_map.end()) 
 	{

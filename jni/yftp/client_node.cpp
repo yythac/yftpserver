@@ -107,6 +107,10 @@ namespace ftp {
 					YERROR_OUT("read_data::read_some error:%s", boost::system::system_error(ec).what());
 					ret = -1;
 				}
+				else
+				{
+					ret = 0;
+				}
 			}
 			return ret;
 		}
@@ -117,7 +121,7 @@ namespace ftp {
 			if (is_ctrl == true)
 			{
 #ifdef SERVER_APP				
-				return ctrl_socket_->i_send_data(pdata, len);
+				return ctrl_socket_->i_sync_send_data(pdata, len);
 #else
 				boost::asio::write(*ctrl_socket_, boost::asio::buffer(pdata, len), ec);
 				return !ec;
@@ -209,8 +213,8 @@ namespace ftp {
 					//is ftps?
 					if (data_use_ssl_ == true)
 					{
-						if (ssl_socket_ == nullptr)
-							ssl_socket_ = make_shared<boost::asio::ssl::stream<boost::asio::ip::tcp::socket&>>(*data_socket_, ftp_server::ssl_context());
+						if (ssl_socket_ == nullptr && ftp_server::ssl_context() != nullptr)
+							ssl_socket_ = make_shared<boost::asio::ssl::stream<boost::asio::ip::tcp::socket&>>(*data_socket_, *ftp_server::ssl_context());
 						if (ssl_socket_ == nullptr)
 						{
 							return false;
@@ -270,8 +274,8 @@ namespace ftp {
 					//is ftps?
 					if (data_use_ssl_ == true)
 					{
-						if (ssl_socket_ == nullptr)
-							ssl_socket_ = make_shared<boost::asio::ssl::stream<boost::asio::ip::tcp::socket&>>(*data_socket_, ftp_server::ssl_context());
+						if (ssl_socket_ == nullptr && ftp_server::ssl_context() != nullptr)
+							ssl_socket_ = make_shared<boost::asio::ssl::stream<boost::asio::ip::tcp::socket&>>(*data_socket_, *ftp_server::ssl_context());
 						if (ssl_socket_ == nullptr)
 						{
 							return false;
@@ -1543,16 +1547,27 @@ namespace ftp {
 				}
 				else if (cmd_arg == L"P")
 				{
+#ifdef SERVER_APP
 					if (data_use_ssl_ == true)
 					{
 						ftpreply.create(431, L"DATA CHANNEL PROTECTION LEVEL is already set to P");
 					}
 					else
 					{
-						data_use_ssl_ = true;
+						if (ctrl_socket_->i_is_use_ssl() == true)
+						{
+							data_use_ssl_ = true;
 
-						ftpreply.create(200, (boost::wformat(L"DATA CHANNEL PROTECTION LEVEL set to %s") % cmd_arg).str());
+							ftpreply.create(200, (boost::wformat(L"DATA CHANNEL PROTECTION LEVEL set to %s") % cmd_arg).str());
+						}
+						else
+						{
+							ftpreply.create(534, (boost::wformat(L"DATA CHANNEL PROTECTION LEVEL %s is not support") % cmd_arg).str());
+						}
 					}
+#else
+					ftpreply.create(534, (boost::wformat(L"DATA CHANNEL PROTECTION LEVEL %s is not support") % cmd_arg).str());
+#endif
 				}
 				else
 				{
@@ -1571,23 +1586,30 @@ namespace ftp {
 			else
 			{
 #ifdef SERVER_APP
-				if (ctrl_socket_->i_is_use_ssl() == true)
+				if(ftp_server::ssl_context() != nullptr)
 				{
-					ftpreply.create(534, L"Authentication type already set to SSL");
-				}
-				else if (cmd_arg == L"SSL" || cmd_arg == L"TLS")
-				{
-					ftpreply.create(234, L"Using authentication type TLS");
-					send_reply(ftpreply);
-					ftpreply.clear();
-					ctrl_socket_->i_handshake();
+					if (ctrl_socket_->i_is_use_ssl() == true)
+					{
+						ftpreply.create(534, L"Authentication type already set to SSL");
+					}
+					else if (cmd_arg == L"SSL" || cmd_arg == L"TLS")
+					{
+						ftpreply.create(234, L"Using authentication type TLS");
+						send_reply(ftpreply);
+						ftpreply.clear();
+						ctrl_socket_->i_handshake();
+					}
+					else
+					{
+						ftpreply.create(504, L"Auth type not supported");
+					}
 				}
 				else
 				{
-					ftpreply.create(504, L"Auth type not supported");
+					ftpreply.create(502, L"Cmd not supported");
 				}
 #else
-				ftpreply.create(504, L"Auth type not supported");
+				ftpreply.create(502, L"Cmd not supported");
 #endif
 			}
 			return true;
@@ -1656,8 +1678,9 @@ namespace ftp {
 				len = -1;
 			}
 
-		//	YDEBUG_OUT("len=%X,data_socket_->is_open()=%d", len, data_socket_->is_open());
+			//YDEBUG_OUT("store_thread::len=%X,shut_down_data_socket", len);
 			shut_down_data_socket();
+			//YDEBUG_OUT("store_thread::close_data_socket");
 			close_data_socket();
 			{
 				std::lock_guard<std::mutex> lock(ctrl_socket_lock_);
@@ -1667,7 +1690,7 @@ namespace ftp {
 					memset(&current_transfer_, 0x0, sizeof(current_transfer_));
 					cur_data_mode_ = ftp_data_mode::mode_none;
 					this->cur_status_ = ftp_client_status::status_waiting;
-
+					//YDEBUG_OUT("store_thread::send_reply");
 					if (len == 0)
 					{
 						send_reply(226, L"Transfer complete.");
@@ -1676,7 +1699,7 @@ namespace ftp {
 					{
 						send_reply(550, L"Can 't receive file.");
 					}
-
+					//YDEBUG_OUT("store_thread::send_reply.....end");
 				}
 			}
 

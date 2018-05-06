@@ -24,13 +24,15 @@
 		<tmp_dh_file>server_certs/dh2048.pem</tmp_dh_file>
 	<!--  服务器私钥文件格式,pem:pem file;asn1:asn.1 file -->
 		<key_file_format>pem</key_file_format>
+	<!--  服务器私钥文件密码，如果私钥文件没加密，则为空 -->	
+		<key_file_password>test</key_file_password>
 
 	<!--  use_raw_data=======1:使用原始数据包格式；0:使用（2字节长度+数据内容）打包格式 -->
 		<use_raw_data>1</use_raw_data>
 
-	<!--  server bind ip -->
+	<!--  server bind ip，服务器绑定ip -->
 		<bindip>0.0.0.0</bindip>
-	<!--  server listen port -->
+	<!--  server listen port，服务器监听端口 -->
 		<port>21</port>
 	<!--  服务器IO线程数======= -1:cpu个数*2 -->
 		<io_thread_num>-1</io_thread_num>
@@ -43,14 +45,18 @@
 		<max_thread_num>32</max_thread_num>
 	</threadpool>
 
+	<ftp>
+		<server>
 	<!--  ftp server根目录 -->
-	<ftp><server>
-		<root_dir>c:\</root_dir>
+			<root_dir>c:\</root_dir>
 	<!--  ftp server是否允许匿名登录，格式为 是否允许匿名:匿名用户目录(在ftp根目录之下,为空表示使用ftp根目录):匿名用户权限（r:读;w:写;d:删除） -->
-		<allow_anonymous>1:users\public:rwd</allow_anonymous>
+			<allow_anonymous>1:users:rwd</allow_anonymous>
 	<!--  ftp 用户信息,格式为 用户名:密码:用户目录（在ftp根目录之下,为空表示使用ftp根目录）:权限（r:读;w:写;d:删除）-->
-		<user1>tester1:123456::rwd</user1>
+	<!--  多个用户分别用user1,user2...usern表示，如下所示  -->
+	<!--	<user1>tester1:123456::rwd</user1>  -->
+	<!--	<user2>tester2:123456:windows:rwd</user2>  -->
 	<!--  ftp pasv模式开的端口范围 -->
-		<pasv_port_range>10000-30000</pasv_port_range>
-	</server></ftp>
+			<pasv_port_range>10000-30000</pasv_port_range>
+		</server>
+	</ftp>
 </config>
