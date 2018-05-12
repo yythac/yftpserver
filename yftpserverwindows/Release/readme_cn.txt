@@ -58,6 +58,7 @@ server_certs-----------------------------------使用ssl连接时的证书文件
 	
 5.3 运行 “yftpserver /registerService" 把ftp 服务器安装成一个windows服务
 	yftpserver /registerService
+	然后用“net start yftpserver”命令启动ftp服务器
 
 6、个人信息
 个人网站：http://www.yythac.com
